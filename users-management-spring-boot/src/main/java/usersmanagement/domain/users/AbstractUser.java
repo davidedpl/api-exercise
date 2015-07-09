@@ -13,7 +13,7 @@ abstract class AbstractUser implements User {
     private final String title;
     private final String firstName;
     private final String lastName;
-    private final LocalDate dateOfBirth; // TODO verify is working properly
+    private final LocalDate dateOfBirth;
     private final String email; // TODO validate email
     private final char[] password; // TODO hash in SHA1
     private final String username; // TODO explain -- add validation (letters and numbers only)

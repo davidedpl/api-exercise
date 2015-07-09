@@ -12,10 +12,7 @@ import java.time.LocalDate;
  */
 public class Users {
 
-    // we don't want to instantiate this class
-    private Users() {
-        throw new AssertionError();
-    }
+    private Users() { }
 
     public static AddressableUser getSubscriber(String title, String lastName, String firstName, LocalDate dateOfBirth,
                                                 String email, char[] password, String username,
@@ -39,13 +36,4 @@ public class Users {
         };
     }
 
-//    public static User getSuperUser(String title, String lastName, String firstName, LocalDate dateOfBirth,
-//                                    String email, char[] password, String username) {
-//        return new AbstractUser(lastName, firstName, password, email, title, username, dateOfBirth) {
-//            @Override
-//            public UserType getType() {
-//                return UserType.SuperUser;
-//            }
-//        };
-//    }
 }
