@@ -18,16 +18,27 @@ public class AssemblerUtils {
         return getString(node, field).map(s -> Enum.valueOf(clazz, s));
     }
 
+    public static <T extends Enum<T>> T getMandatoryEnum(JsonNode node, Class<T> clazz, String field) {
+        return Enum.valueOf(clazz, getMandatoryString(node, field));
+    }
+
     public static String getString(JsonNode node, String field, String def) {
         return getString(node, field).orElse(def);
     }
 
     public static Optional<String> getString(JsonNode node, String field) {
         if (validNodeAndField(node, field)) {
-            return Optional.of(node.get(field).asText());
+            return Optional.of(extractString(node, field));
         } else {
             return Optional.empty();
         }
+    }
+
+    public static String getMandatoryString(JsonNode node, String field) {
+        if (validNodeAndField(node, field)) {
+            return extractString(node, field);
+        }
+        throw validationException(field);
     }
 
     public static int getInt(JsonNode node, String field) {
@@ -54,7 +65,23 @@ public class AssemblerUtils {
         }
     }
 
+    public static LocalDate getMandatoryLocalDate(JsonNode node, String field) {
+        if (validNodeAndField(node, field)) {
+            return LocalDate.parse(extractString(node, field));
+        }
+        throw validationException(field);
+    }
+
+    public static ValidationException validationException(String field) {
+        return new ValidationException("Mandatory field missing: " + field);
+    }
+
     private static boolean validNodeAndField(JsonNode node, String field) {
         return node != null && node.has(field);
     }
+
+    private static String extractString(JsonNode node, String field) {
+        return node.get(field).asText();
+    }
+
 }

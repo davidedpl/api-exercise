@@ -6,6 +6,7 @@ import usersmanagement.domain.Address;
 
 import java.util.Optional;
 
+import static usersmanagement.rest.v1.assembler.AssemblerUtils.getMandatoryString;
 import static usersmanagement.rest.v1.assembler.AssemblerUtils.getString;
 
 @Component
@@ -14,8 +15,8 @@ public class AddressAssembler implements Assembler<Optional<Address>> {
     public Optional<Address> assemble(JsonNode node) {
         if (node != null) {
             Address.AddressBuilder builder = new Address.AddressBuilder(
-                    getString(node, "addressLine1").get(),
-                    getString(node, "country").get()
+                    getMandatoryString(node, "addressLine1"),
+                    getMandatoryString(node, "country")
             );
             getString(node, "addressLine2").ifPresent(s -> builder.withAddressLine2(s));
             getString(node, "postCode").ifPresent(s -> builder.withPostCode(s));

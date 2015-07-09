@@ -24,30 +24,30 @@ public class CreateUserAssembler implements Assembler<User> {
 
     @Override
     public User assemble(JsonNode node) {
-        UserType type = getEnum(node, UserType.class, "type").get();
+        UserType type = getMandatoryEnum(node, UserType.class, "type");
         switch (type) {
             case Subscriber:
                 return Users.getSubscriber(
-                        getString(node, "title").get(),
-                        getString(node, "lastName").get(),
-                        getString(node, "firstName").get(),
-                        getLocalDate(node, "dateOfBirth").get(),
-                        getString(node, "email").get(),
-                        getString(node, "password").get().toCharArray(),
-                        getString(node, "username").get(),
-                        addressAssembler.assemble(node.get("homeAddress")).get(),
-                        addressAssembler.assemble(node.get("billingAddress")).get()
+                        getMandatoryString(node, "title"),
+                        getMandatoryString(node, "lastName"),
+                        getMandatoryString(node, "firstName"),
+                        getMandatoryLocalDate(node, "dateOfBirth"),
+                        getMandatoryString(node, "email"),
+                        getMandatoryString(node, "password").toCharArray(),
+                        getMandatoryString(node, "username"),
+                        addressAssembler.assemble(node.get("homeAddress")).orElseThrow(ValidationException::new),
+                        addressAssembler.assemble(node.get("billingAddress")).orElseThrow(ValidationException::new)
 
                 );
             case Administrator:
                 return Users.getAdmin(
-                        getString(node, "title").get(),
-                        getString(node, "lastName").get(),
-                        getString(node, "firstName").get(),
-                        getLocalDate(node, "dateOfBirth").get(),
-                        getString(node, "email").get(),
-                        getString(node, "password").get().toCharArray(),
-                        getString(node, "username").get()
+                        getMandatoryString(node, "title"),
+                        getMandatoryString(node, "lastName"),
+                        getMandatoryString(node, "firstName"),
+                        getMandatoryLocalDate(node, "dateOfBirth"),
+                        getMandatoryString(node, "email"),
+                        getMandatoryString(node, "password").toCharArray(),
+                        getMandatoryString(node, "username")
                 );
             default:
                 throw new ValidationException("Invalid user type: " + type);
