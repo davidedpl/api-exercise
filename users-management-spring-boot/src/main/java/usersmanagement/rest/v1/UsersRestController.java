@@ -25,8 +25,21 @@ public class UsersRestController {
 
     @GET
     @Path("/{username}")
-    public String readUser(@PathParam("username") String username) {
-        return username;
+    public String readUser(
+            @PathParam("username") String username,
+            @HeaderParam("username") String clientUserName,
+            @HeaderParam("role") UserType clientUserRole) {
+
+//        checkAuthorization(clientUserRole, clientUserName, username, "retrieve");
+
+        // role Super
+        // role Admin
+        // role Subscriber and target.equals(username)
+
+
+
+        User user = userRepository.retrieve(username);
+        return user.getUsername();
     }
 
     @POST
@@ -41,10 +54,6 @@ public class UsersRestController {
         userRepository.create(user);
     }
 
-    public User getSingleUser(UserType requiringUserType, String requiringUsername, String username) {
-        checkAuthorization(requiringUserType, requiringUsername, username, "retrieve");
-        return userRepository.retrieve(username);
-    }
 
     // asses that the requiring user is enabled to perform the required action on the target user
     // throws a SecurityException if the permission is not valid
