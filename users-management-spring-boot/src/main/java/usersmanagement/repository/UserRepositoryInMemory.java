@@ -1,5 +1,6 @@
 package usersmanagement.repository;
 
+import org.springframework.stereotype.Repository;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
@@ -8,6 +9,7 @@ import usersmanagement.domain.exceptions.UserNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+@Repository
 public class UserRepositoryInMemory implements UserRepository {
 
     private final NavigableMap<String, User> users = new ConcurrentSkipListMap<String, User>();
@@ -44,7 +46,8 @@ public class UserRepositoryInMemory implements UserRepository {
 
     @Override
     public void update(String username, Map<String, Object> props) {
-
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override

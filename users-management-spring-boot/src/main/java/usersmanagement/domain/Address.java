@@ -1,5 +1,7 @@
 package usersmanagement.domain;
 
+import org.springframework.util.StringUtils;
+
 public class Address {
 
     private final String addressLine1;
@@ -40,20 +42,28 @@ public class Address {
         private String postCode = "";
 
         public AddressBuilder(String addressLine1, String country) {
-            // TODO assert not null/empty
+            if (StringUtils.isEmpty(addressLine1)) {
+                throw new IllegalArgumentException("addressLine1 is empty");
+            }
+            if (StringUtils.isEmpty(country)) {
+                throw new IllegalArgumentException("country is empty");
+            }
+
             this.addressLine1 = addressLine1;
             this.country = country;
         }
 
         public AddressBuilder withAddressLine2(String addressLine2) {
-            // TODO assert not null/empty
-            this.addressLine2 = addressLine2;
+            if (addressLine2 != null) {
+                this.addressLine2 = addressLine2;
+            }
             return this;
         }
 
         public AddressBuilder withPostCode(String postCode) {
-            // TODO assert not null/empty
-            this.postCode = postCode;
+            if (postCode != null) {
+                this.postCode = postCode;
+            }
             return this;
         }
 

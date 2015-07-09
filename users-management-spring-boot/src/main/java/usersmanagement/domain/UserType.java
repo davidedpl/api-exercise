@@ -1,5 +1,8 @@
 package usersmanagement.domain;
 
+/**
+ * Describes the different types of users.
+ */
 public enum UserType {
 
     Subscriber("Subscriber"),
@@ -7,7 +10,7 @@ public enum UserType {
     SuperUser("Super User");
 
     /** String representation of the user-type */
-    final String representation;
+    private final String representation;
 
     UserType(String representation) {
         this.representation = representation;
@@ -17,4 +20,5 @@ public enum UserType {
     public String toString() {
         return representation;
     }
+
 }

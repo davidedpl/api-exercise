@@ -2,21 +2,20 @@ package usersmanagement.fixtures;
 
 import usersmanagement.domain.Address;
 import usersmanagement.domain.User;
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.users.Users;
 
 import java.time.LocalDate;
 
 public class UserTestData {
 
     public static User subscriberUser1() {
-        return new User(
-                UserType.Subscriber,
+        return Users.getSubscriber(
                 "Mr",
                 "John",
                 "Doe",
                 LocalDate.now(),
                 "john@doe.co.uk",
-                new char[] {'p','w','d'},
+                new char[]{'p', 'w', 'd'},
                 "johndoe",
                 address1(),
                 address2()
@@ -24,14 +23,13 @@ public class UserTestData {
     }
 
     public static User subscriberUser2() {
-        return new User(
-                UserType.Subscriber,
+        return Users.getSubscriber(
                 "Ms",
                 "Jane",
                 "Doe",
                 LocalDate.now(),
                 "jane@doe.co.uk",
-                new char[] {'p','w','d'},
+                new char[]{'p', 'w', 'd'},
                 "janedoe",
                 address1(),
                 address2()
