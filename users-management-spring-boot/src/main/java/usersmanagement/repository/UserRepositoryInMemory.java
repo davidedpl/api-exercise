@@ -22,13 +22,8 @@ public class UserRepositoryInMemory implements UserRepository {
     }
 
     @Override
-    public User retrieve(String username) {
-        // TODO use Optional ?
-        User user;
-        if ((user = users.get(username)) != null) {
-            return user;
-        }
-        throw new UserNotFoundException(username);
+    public Optional<User> retrieve(String username) {
+        return Optional.ofNullable(users.get(username));
     }
 
     @Override

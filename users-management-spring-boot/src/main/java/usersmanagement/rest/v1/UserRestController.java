@@ -3,8 +3,12 @@ package usersmanagement.rest.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import usersmanagement.domain.User;
+import usersmanagement.domain.UserAction;
 import usersmanagement.domain.UserRepository;
 import usersmanagement.domain.UserType;
+import usersmanagement.domain.exceptions.UserNotFoundException;
+import usersmanagement.domain.security.PermissionHolder;
+import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 
 import javax.inject.Inject;
@@ -14,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Optional;
 
 @Component
 @Path(UserRestController.PATH)
@@ -45,12 +50,17 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
 
-//        checkAuthorization(clientUserRole, clientUserName, username, "retrieve");
-        // role Super
-        // role Admin
-        // role Subscriber and target.equals(username)
+        Optional<User> user = userRepository.retrieve(username);
 
-        return Response.ok(userRepository.retrieve(username)).build();
+        validatePermission(clientUserRole.getPermissions(),
+                UserAction.READ,
+                new UserSecurityContext.UserSecurityContextBuilder()
+                        .withUserName(clientUserName)
+                        .withTargetUsername(username)
+                        .withTargetUserType(user.map(u -> u.getType()).orElse(null))
+                        .build());
+
+        return Response.ok(user.orElseThrow(() -> new UserNotFoundException(username))).build();
     }
 
     @POST
@@ -58,8 +68,17 @@ public class UserRestController {
             @HeaderParam("username") String clientUserName,
             @HeaderParam("role") UserType clientUserRole,
             JsonNode createUser) {
+
         User userToRegister = createUserAssembler.assemble(createUser);
-//        checkAuthorization(clientUserRole, clientUserName, userToRegister.getUsername(), "register");
+
+        validatePermission(clientUserRole.getPermissions(),
+                UserAction.CREATE,
+                new UserSecurityContext.UserSecurityContextBuilder()
+                        .withUserName(clientUserName)
+                        .withTargetUsername(userToRegister.getUsername())
+                        .withTargetUserType(userToRegister.getType())
+                        .build());
+
         userRepository.create(userToRegister);
         URI userUri = uriInfo.getBaseUriBuilder().path(PATH + "/" + userToRegister.getUsername()).build();
         return Response.created(userUri).build();
@@ -71,6 +90,13 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username,
             JsonNode updateUser) {
+
+        validatePermission(clientUserRole.getPermissions(),
+                UserAction.CREATE,
+                new UserSecurityContext.UserSecurityContextBuilder()
+                        .withTargetUserType(null) //FIXME
+                        .build());
+
         // TODO
         return Response.ok().build();
     }
@@ -80,26 +106,20 @@ public class UserRestController {
     public Response deleteUser(
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
-        if (UserType.SuperUser != clientUserRole) {
-            throw new SecurityException("Operation not permitted");
-        }
+
+        validatePermission(clientUserRole.getPermissions(),
+                UserAction.DELETE,
+                new UserSecurityContext.UserSecurityContextBuilder().build());
+
         userRepository.delete(username);
         return Response.ok().build();
     }
 
-    // asses that the requiring user is enabled to perform the required action on the target user
-    // throws a SecurityException if the permission is not valid
-    private void checkAuthorization(UserType requiringUserType, String requiringUsername,
-                                    String targetUsername, String action) {
-        if (requiringUserType == UserType.Subscriber) {
-            if (!requiringUsername.equals(targetUsername)) {
-                throw new SecurityException("Subscriber " + requiringUsername + " tried to " + action
-                        + " user " + targetUsername);
-            }
-        } else {
-            throw new UnsupportedOperationException("Not yet implemented");
+    private void validatePermission(PermissionHolder permissionHolder,
+                                    UserAction action, UserSecurityContext ctx) {
+        if (!permissionHolder.hasPermission(action, ctx)) {
+            throw new SecurityException("Operation not permitted");
         }
     }
-
 
 }

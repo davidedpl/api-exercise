@@ -5,6 +5,7 @@ import usersmanagement.domain.exceptions.UserNotFoundException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface UserRepository {
 
@@ -18,9 +19,8 @@ public interface UserRepository {
     /**
      * Retrieve the user with the provided username.
      * @param username
-     * @throws UserNotFoundException if the user with the given username doesn't exist
      */
-    User retrieve(String username);
+    Optional<User> retrieve(String username);
 
     /**
      * Retrieve all the users in the specified range.
