@@ -1,4 +1,4 @@
-package usersmanagement.repository;
+package usersmanagement.infrastructure;
 
 import org.springframework.stereotype.Repository;
 import usersmanagement.domain.User;

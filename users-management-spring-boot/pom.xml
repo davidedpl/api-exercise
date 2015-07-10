@@ -76,6 +76,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-jetty</artifactId>
+            <version>2.19</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>com.googlecode.catch-exception</groupId>-->
             <!--<artifactId>catch-exception</artifactId>-->

@@ -1,4 +1,4 @@
-package usersmanagement.repository;
+package usersmanagement.infrastructure;
 
 import org.junit.Test;
 import usersmanagement.domain.User;

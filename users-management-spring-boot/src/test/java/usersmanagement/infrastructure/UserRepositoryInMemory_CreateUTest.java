@@ -1,4 +1,4 @@
-package usersmanagement.repository;
+package usersmanagement.infrastructure;
 
 import org.junit.Assert;
 import org.junit.Test;

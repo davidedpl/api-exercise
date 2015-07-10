@@ -1,10 +1,11 @@
-package usersmanagement.repository;
+package usersmanagement.infrastructure;
 
 import org.junit.Before;
 import usersmanagement.domain.Addressable;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
 import usersmanagement.fixtures.UserTestData;
+import usersmanagement.infrastructure.UserRepositoryInMemory;
 
 import static org.junit.Assert.assertEquals;
 

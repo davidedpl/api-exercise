@@ -1,5 +1,6 @@
 package usersmanagement.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import usersmanagement.domain.security.UserType;
@@ -24,6 +25,7 @@ public interface User {
 
     String getEmail();
 
+    @JsonIgnore
     char[] getPassword();
 
     String getUsername();
