@@ -9,11 +9,6 @@ import static org.junit.Assert.assertEquals;
 public class UserRepositoryInMemory_DeleteUTest extends UserRepositoryInMemoryUTestCommon {
 
     @Test
-    public void deleteExistingUser_Success() {
-        userRepository.delete(createdUser.getUsername());
-    }
-
-    @Test
     public void deleteExistingUser_UserNoMorePresent() {
         userRepository.delete(createdUser.getUsername());
         assertUserNotPresent(createdUser.getUsername());
