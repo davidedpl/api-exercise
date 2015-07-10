@@ -4,20 +4,23 @@ import usersmanagement.domain.UserType;
 
 import java.util.Optional;
 
+/**
+ * Contains information related to the operating user and the target of current operation.
+ */
 public final class UserSecurityContext {
 
-    private final String username;
+    private final String currentUsername;
     private final String targetUsername;
     private final UserType targetUserType;
 
     private UserSecurityContext(UserSecurityContextBuilder builder) {
-        this.username = builder.username;
+        this.currentUsername = builder.currentUsername;
         this.targetUsername = builder.targetUsername;
         this.targetUserType = builder.targetUserType;
     }
 
-    public Optional<String> getUsername() {
-        return Optional.ofNullable(username);
+    public Optional<String> getCurrentUsername() {
+        return Optional.ofNullable(currentUsername);
     }
 
     public Optional<String> getTargetUsername() {
@@ -29,13 +32,12 @@ public final class UserSecurityContext {
     }
 
     public static class UserSecurityContextBuilder {
-        private String username;
+        private String currentUsername;
         private String targetUsername;
         private UserType targetUserType;
 
-
-        public UserSecurityContextBuilder withUserName(String username) {
-            this.username = username;
+        public UserSecurityContextBuilder withCurrentUserName(String currentUsername) {
+            this.currentUsername = currentUsername;
             return this;
         }
 

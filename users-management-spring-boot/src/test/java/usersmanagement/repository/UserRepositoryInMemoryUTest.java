@@ -94,8 +94,8 @@ public class UserRepositoryInMemoryUTest {
 //        UserUpdateHelper helper = new UserUpdateHelper(
 //                null, updatedName, null, null, null, null, null, null
 //        );
-//        userRepository.update(originalUser.getUsername(), helper);
-//        User updatedUser = userRepository.retrieve(originalUser.getUsername()).get();
+//        userRepository.update(originalUser.getCurrentUsername(), helper);
+//        User updatedUser = userRepository.retrieve(originalUser.getCurrentUsername()).get();
 //        assertEquals(updatedName, updatedUser.getFirstName());
 //    }
 

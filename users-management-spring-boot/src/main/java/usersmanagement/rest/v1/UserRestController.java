@@ -2,9 +2,12 @@ package usersmanagement.rest.v1;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.*;
+import usersmanagement.domain.User;
+import usersmanagement.domain.UserRepository;
+import usersmanagement.domain.UserType;
+import usersmanagement.domain.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.security.PermissionHolder;
+import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
@@ -29,7 +32,6 @@ public class UserRestController {
     private final UserRepository userRepository;
     private final CreateUserAssembler createUserAssembler;
     private final UserUpdateHelperAssembler userUpdateHelperAssembler;
-    private UriInfo uriInfo;
 
     @Inject
     public UserRestController(UserRepository userRepository, CreateUserAssembler createUserAssembler,
@@ -37,11 +39,6 @@ public class UserRestController {
         this.userRepository = userRepository;
         this.createUserAssembler = createUserAssembler;
         this.userUpdateHelperAssembler = userUpdateHelperAssembler;
-    }
-
-    @Context
-    public void setUriInfo(UriInfo uriInfo) {
-        this.uriInfo = uriInfo;
     }
 
     @GET
@@ -53,13 +50,11 @@ public class UserRestController {
 
         Optional<User> user = userRepository.retrieve(username);
 
-        validatePermission(clientUserRole.getPermissions(),
-                UserAction.READ,
+        clientUserRole.validate(UserPermission.READ,
                 new UserSecurityContext.UserSecurityContextBuilder()
-                        .withUserName(clientUserName)
+                        .withCurrentUserName(clientUserName)
                         .withTargetUsername(username)
-                        .withTargetUserType(user.map(u -> u.getType()).orElse(null))
-                        .build());
+                        .withTargetUserType(user.map(User::getType).orElse(null)).build());
 
         return Response.ok(user.orElseThrow(() -> new UserNotFoundException(username))).build();
     }
@@ -68,17 +63,16 @@ public class UserRestController {
     public Response registerUser(
             @HeaderParam("username") String clientUserName,
             @HeaderParam("role") UserType clientUserRole,
+            @Context UriInfo uriInfo,
             JsonNode createUser) {
 
         User userToRegister = createUserAssembler.assemble(createUser);
 
-        validatePermission(clientUserRole.getPermissions(),
-                UserAction.CREATE,
+        clientUserRole.validate(UserPermission.CREATE,
                 new UserSecurityContext.UserSecurityContextBuilder()
-                        .withUserName(clientUserName)
+                        .withCurrentUserName(clientUserName)
                         .withTargetUsername(userToRegister.getUsername())
-                        .withTargetUserType(userToRegister.getType())
-                        .build());
+                        .withTargetUserType(userToRegister.getType()).build());
 
         userRepository.create(userToRegister);
         URI userUri = uriInfo.getBaseUriBuilder().path(PATH + "/" + userToRegister.getUsername()).build();
@@ -96,11 +90,9 @@ public class UserRestController {
 
         Optional<User> originalUser = userRepository.retrieve(username);
 
-        validatePermission(clientUserRole.getPermissions(),
-                UserAction.CREATE,
+        clientUserRole.validate(UserPermission.CREATE,
                 new UserSecurityContext.UserSecurityContextBuilder()
-                        .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null))
-                        .build());
+                        .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null)).build());
 
         userRepository.update(username, updateHelper);
 
@@ -113,19 +105,11 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
 
-        validatePermission(clientUserRole.getPermissions(),
-                UserAction.DELETE,
+        clientUserRole.validate(UserPermission.DELETE,
                 new UserSecurityContext.UserSecurityContextBuilder().build());
 
         userRepository.delete(username);
         return Response.ok(Response.Status.NO_CONTENT).build();
-    }
-
-    private void validatePermission(PermissionHolder permissionHolder,
-                                    UserAction action, UserSecurityContext ctx) {
-        if (!permissionHolder.hasPermission(action, ctx)) {
-            throw new SecurityException("Operation not permitted");
-        }
     }
 
 }

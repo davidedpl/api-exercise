@@ -1,10 +1,11 @@
 package usersmanagement.domain;
 
 import usersmanagement.domain.security.PermissionHolder;
+import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserSecurityContext;
 
 /**
- * Describes the different types of users.
+ * Describes the different types of users and define their permissions.
  */
 public enum UserType {
 
@@ -12,23 +13,20 @@ public enum UserType {
         switch (action) {
             case CREATE:
             case READ:
-                return ctx.getUsername().map(name -> name.equals(ctx.getTargetUsername().orElse(null)))
+                return ctx.getCurrentUsername().map(name -> name.equals(ctx.getTargetUsername().orElse(null)))
                         .orElse(false);
             default:
                 return false;
         }
     }),
-    Administrator(new PermissionHolder() {
-        @Override
-        public boolean hasPermission(UserAction action, UserSecurityContext ctx) {
-            switch (action) {
-                case CREATE:
-                case READ:
-                case UPDATE:
-                    return ctx.getTargetUserType().map(type -> type.equals(Subscriber)).orElse(false);
-                default:
-                    return false;
-            }
+    Administrator((action, ctx) -> {
+        switch (action) {
+            case CREATE:
+            case READ:
+            case UPDATE:
+                return ctx.getTargetUserType().map(type -> type == Subscriber || type == null).orElse(false);
+            default:
+                return false;
         }
     }),
     SuperUser((action, ctx) -> {
@@ -49,8 +47,9 @@ public enum UserType {
         this.permissionHolder = permissionHolder;
     }
 
-    public PermissionHolder getPermissions() {
-        return permissionHolder;
+    public void validate(UserPermission action, UserSecurityContext ctx) {
+        if (!permissionHolder.hasPermission(action, ctx)) {
+            throw new SecurityException("Operation not permitted");
+        }
     }
-
 }

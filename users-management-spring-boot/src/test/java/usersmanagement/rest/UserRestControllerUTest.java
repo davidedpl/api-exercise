@@ -20,15 +20,15 @@ public class UserRestControllerUTest {
 
 //    @Test
 //    public void subscriberCanRetrieveItself() {
-//        userController.readUser(testUser.getUsername(), testUser.getType(), testUser.getUsername());
-//        verify(userRepository).retrieve(testUser.getUsername());
+//        userController.readUser(testUser.getCurrentUsername(), testUser.getType(), testUser.getCurrentUsername());
+//        verify(userRepository).retrieve(testUser.getCurrentUsername());
 //        verifyNoMoreInteractions(userRepository);
 //    }
 //
 //    @Test
 //    public void subscriberCanNotRetrieveAnotherUser() {
 //        try {
-//            userController.readUser(testUser.getUsername(), testUser.getType(), otherUser.getUsername());
+//            userController.readUser(testUser.getCurrentUsername(), testUser.getType(), otherUser.getCurrentUsername());
 //            Assert.fail("SecurityException expected");
 //        } catch (SecurityException e) {
 //            verifyZeroInteractions(userRepository);
@@ -37,7 +37,7 @@ public class UserRestControllerUTest {
 
 //    @Test
 //    public void subscriberCanCreateItself() {
-//        userController.register(testUser.getType(), testUser.getUsername(), testUser);
+//        userController.register(testUser.getType(), testUser.getCurrentUsername(), testUser);
 //        verify(userRepository).create(testUser);
 //        verifyNoMoreInteractions(userRepository);
 //    }
@@ -45,7 +45,7 @@ public class UserRestControllerUTest {
 //    @Test
 //    public void subscriberCanNotRegisterAnotherUser() {
 //        try {
-//            userController.register(testUser.getType(), testUser.getUsername(), otherUser);
+//            userController.register(testUser.getType(), testUser.getCurrentUsername(), otherUser);
 //            Assert.fail("SecurityException expected");
 //        } catch (SecurityException e) {
 //            verifyZeroInteractions(userRepository);

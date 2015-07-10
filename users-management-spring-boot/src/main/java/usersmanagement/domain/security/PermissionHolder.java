@@ -1,7 +1,8 @@
 package usersmanagement.domain.security;
 
-import usersmanagement.domain.UserAction;
-
+/**
+ * Describe a security element containing the permissions for a specific role
+ */
 public interface PermissionHolder {
-    public boolean hasPermission(UserAction action, UserSecurityContext ctx);
+    public boolean hasPermission(UserPermission action, UserSecurityContext ctx);
 }
