@@ -1,7 +1,5 @@
 package usersmanagement.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import usersmanagement.domain.users.Users;
 
 import java.time.LocalDate;
@@ -19,24 +17,22 @@ public class UserUpdateHelper {
     private final Optional<Address> homeAddress;
     private final Optional<Address> billingAddress;
 
-    @JsonCreator()
-    public UserUpdateHelper(
-            @JsonProperty(value = "title", required = false) String title,
-            @JsonProperty(value = "firstName", required = false) String firstName,
-            @JsonProperty(value = "lastName", required = false) String lastName,
-            @JsonProperty(value = "dateOfBirth", required = false) String dateOfBirth,
-            @JsonProperty(value = "email", required = false) String email,
-            @JsonProperty(value = "password", required = false) String password,
-            @JsonProperty(value = "homeAddress", required = false) AddressHelper homeAddress,
-            @JsonProperty(value = "billingAddress", required = false) AddressHelper billingAddress) {
-        this.title = Optional.ofNullable(title);
-        this.firstName = Optional.ofNullable(firstName);
-        this.lastName = Optional.ofNullable(lastName);
-        this.dateOfBirth = Optional.ofNullable(dateOfBirth).map(LocalDate::parse);
-        this.email = Optional.ofNullable(email);
-        this.password = Optional.ofNullable(password).map(String::toCharArray);
-        this.homeAddress = Optional.ofNullable(homeAddress).map(AddressHelper::toAddress);
-        this.billingAddress = Optional.ofNullable(billingAddress).map(AddressHelper::toAddress);
+    public UserUpdateHelper(Optional<String> title,
+                            Optional<String> firstName,
+                            Optional<String> lastName,
+                            Optional<LocalDate> dateOfBirth,
+                            Optional<String> email,
+                            Optional<char[]> password,
+                            Optional<Address> homeAddress,
+                            Optional<Address> billingAddress) {
+        this.title = title;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.password = password;
+        this.homeAddress = homeAddress;
+        this.billingAddress = billingAddress;
     }
 
     public User updateUser(User originalUser) {

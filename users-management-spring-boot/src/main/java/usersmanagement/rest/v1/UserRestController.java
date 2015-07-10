@@ -7,6 +7,7 @@ import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.domain.security.PermissionHolder;
 import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
+import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -27,12 +28,15 @@ public class UserRestController {
 
     private final UserRepository userRepository;
     private final CreateUserAssembler createUserAssembler;
+    private final UserUpdateHelperAssembler userUpdateHelperAssembler;
     private UriInfo uriInfo;
 
     @Inject
-    public UserRestController(UserRepository userRepository, CreateUserAssembler createUserAssembler) {
+    public UserRestController(UserRepository userRepository, CreateUserAssembler createUserAssembler,
+                              UserUpdateHelperAssembler userUpdateHelperAssembler) {
         this.userRepository = userRepository;
         this.createUserAssembler = createUserAssembler;
+        this.userUpdateHelperAssembler = userUpdateHelperAssembler;
     }
 
     @Context
@@ -86,7 +90,9 @@ public class UserRestController {
     public Response updateUser(
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username,
-            UserUpdateHelper updateUser) {
+            JsonNode updateUser) {
+
+        UserUpdateHelper updateHelper = userUpdateHelperAssembler.assemble(updateUser);
 
         Optional<User> originalUser = userRepository.retrieve(username);
 
@@ -96,7 +102,7 @@ public class UserRestController {
                         .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null))
                         .build());
 
-        userRepository.update(username, updateUser);
+        userRepository.update(username, updateHelper);
 
         return Response.ok(Response.Status.NO_CONTENT).build();
     }

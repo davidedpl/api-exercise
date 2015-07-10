@@ -59,7 +59,7 @@ public class AssemblerUtils {
 
     public static Optional<LocalDate> getLocalDate(JsonNode node, String field) {
         if (validNodeAndField(node, field)) {
-            return Optional.of(LocalDate.parse(node.get(field).asText()));
+            return getString(node, field).map(LocalDate::parse);
         } else {
             return Optional.empty();
         }
