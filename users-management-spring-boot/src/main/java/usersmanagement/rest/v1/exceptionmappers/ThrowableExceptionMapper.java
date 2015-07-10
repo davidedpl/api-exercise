@@ -1,4 +1,4 @@
-package usersmanagement.rest.v1;
+package usersmanagement.rest.v1.exceptionmappers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.logging.Log;
