@@ -12,8 +12,8 @@ public class UserTestData {
     public static AddressableUser subscriberUser1() {
         return Users.getSubscriber(
                 "Mr",
-                "John",
                 "Doe",
+                "John",
                 LocalDate.parse("2015-01-05"),
                 "john@doe.co.uk",
                 new char[]{'p', 'w', 'd'},
@@ -26,8 +26,8 @@ public class UserTestData {
     public static AddressableUser subscriberUser2() {
         return Users.getSubscriber(
                 "Ms",
-                "Jane",
                 "Clark",
+                "Jane",
                 LocalDate.parse("2015-08-07"),
                 "jane@clark.co.uk",
                 new char[]{'1', '2', '3'},
@@ -40,8 +40,8 @@ public class UserTestData {
     public static User adminUser() {
         return Users.getAdmin(
                 "Lord",
-                "Admin",
                 "Istrator",
+                "Admin",
                 LocalDate.parse("2018-08-08"),
                 "admin@users.co.uk",
                 new char[]{'a', 'd', 'm', 'i', 'n'},
@@ -52,8 +52,8 @@ public class UserTestData {
     public static User adminUser2() {
         return Users.getAdmin(
                 "Sir",
-                "Ross",
                 "Green",
+                "Ross",
                 LocalDate.parse("1980-08-08"),
                 "admin2@users.co.uk",
                 new char[]{'a', 'd', 'm', 'i', 'n', '2'},

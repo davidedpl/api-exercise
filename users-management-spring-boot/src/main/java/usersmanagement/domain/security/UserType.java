@@ -37,9 +37,9 @@ public enum UserType implements SecurityValidator {
         }
     });
 
-    private final PermissionHolder permissionHolder;
+    private final PermissionsHolder permissionHolder;
 
-    UserType(PermissionHolder permissionHolder) {
+    UserType(PermissionsHolder permissionHolder) {
         this.permissionHolder = permissionHolder;
     }
 
@@ -47,5 +47,9 @@ public enum UserType implements SecurityValidator {
         if (!permissionHolder.hasPermission(action, ctx)) {
             throw new SecurityException("Operation not permitted");
         }
+    }
+
+    private interface PermissionsHolder {
+        public boolean hasPermission(UserPermission action, UserSecurityContext ctx);
     }
 }

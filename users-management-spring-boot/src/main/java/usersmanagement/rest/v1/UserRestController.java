@@ -3,11 +3,7 @@ package usersmanagement.rest.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import usersmanagement.domain.User;
-import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.security.SecurityValidatorFactory;
-import usersmanagement.domain.security.UserPermission;
-import usersmanagement.domain.security.UserSecurityContext;
+import usersmanagement.domain.UserController;
 import usersmanagement.domain.security.UserType;
 import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
@@ -20,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.Optional;
 
 @Component
 @Path(UserRestController.PATH)
@@ -30,18 +25,16 @@ public class UserRestController {
 
     public final static String PATH = "/v1/users";
 
-    private final UserRepository userRepository;
     private final CreateUserAssembler createUserAssembler;
     private final UserUpdateHelperAssembler userUpdateHelperAssembler;
-    private final SecurityValidatorFactory securityValidatorFactory;
+    private final UserController userController;
 
     @Inject
-    public UserRestController(UserRepository userRepository, CreateUserAssembler createUserAssembler,
-                              UserUpdateHelperAssembler userUpdateHelperAssembler, SecurityValidatorFactory securityValidatorFactory) {
-        this.userRepository = userRepository;
+    public UserRestController(CreateUserAssembler createUserAssembler,
+                              UserUpdateHelperAssembler userUpdateHelperAssembler, UserController userController) {
         this.createUserAssembler = createUserAssembler;
         this.userUpdateHelperAssembler = userUpdateHelperAssembler;
-        this.securityValidatorFactory = securityValidatorFactory;
+        this.userController = userController;
     }
 
     @GET
@@ -50,16 +43,7 @@ public class UserRestController {
             @HeaderParam("username") String clientUserName,
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
-
-        Optional<User> user = userRepository.retrieve(username);
-
-        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.READ,
-                new UserSecurityContext.UserSecurityContextBuilder()
-                        .withCurrentUserName(clientUserName)
-                        .withTargetUsername(username)
-                        .withTargetUserType(user.map(User::getType).orElse(null)).build());
-
-        return Response.ok(user.orElseThrow(() -> new UserNotFoundException(username))).build();
+        return Response.ok(userController.readUser(clientUserName, clientUserRole, username)).build();
     }
 
     @POST
@@ -68,16 +52,8 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @Context UriInfo uriInfo,
             JsonNode createUser) {
-
         User userToRegister = createUserAssembler.assemble(createUser);
-
-        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.CREATE,
-                new UserSecurityContext.UserSecurityContextBuilder()
-                        .withCurrentUserName(clientUserName)
-                        .withTargetUsername(userToRegister.getUsername())
-                        .withTargetUserType(userToRegister.getType()).build());
-
-        userRepository.create(userToRegister);
+        userController.registerUser(clientUserName, clientUserRole, userToRegister);
         URI userUri = uriInfo.getBaseUriBuilder().path(PATH + "/" + userToRegister.getUsername()).build();
         return Response.created(userUri).build();
     }
@@ -88,17 +64,8 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username,
             JsonNode updateUser) {
-
         UserUpdateHelper updateHelper = userUpdateHelperAssembler.assemble(updateUser);
-
-        Optional<User> originalUser = userRepository.retrieve(username);
-
-        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.CREATE,
-                new UserSecurityContext.UserSecurityContextBuilder()
-                        .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null)).build());
-
-        userRepository.update(username, updateHelper);
-
+        userController.updateUser(clientUserRole, username, updateHelper);
         return Response.ok(Response.Status.NO_CONTENT).build();
     }
 
@@ -107,11 +74,7 @@ public class UserRestController {
     public Response deleteUser(
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
-
-        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.DELETE,
-                new UserSecurityContext.UserSecurityContextBuilder().build());
-
-        userRepository.delete(username);
+        userController.deleteUser(clientUserRole, username);
         return Response.ok(Response.Status.NO_CONTENT).build();
     }
 
