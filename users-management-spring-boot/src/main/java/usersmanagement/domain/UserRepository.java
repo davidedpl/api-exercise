@@ -6,6 +6,9 @@ import usersmanagement.domain.exceptions.UserNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Describe a generic repository for users.
+ */
 public interface UserRepository {
 
     /**
