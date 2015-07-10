@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
-import usersmanagement.domain.UserUpdateHelper;
+import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.fixtures.UserTestData;
 

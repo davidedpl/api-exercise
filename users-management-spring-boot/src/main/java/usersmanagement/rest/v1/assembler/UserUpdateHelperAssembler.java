@@ -2,7 +2,7 @@ package usersmanagement.rest.v1.assembler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.UserUpdateHelper;
+import usersmanagement.domain.utils.UserUpdateHelper;
 
 import javax.inject.Inject;
 

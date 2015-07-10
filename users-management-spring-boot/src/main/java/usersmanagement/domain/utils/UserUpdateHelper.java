@@ -1,6 +1,9 @@
-package usersmanagement.domain;
+package usersmanagement.domain.utils;
 
-import usersmanagement.domain.users.Users;
+import usersmanagement.domain.Address;
+import usersmanagement.domain.Addressable;
+import usersmanagement.domain.AddressableUser;
+import usersmanagement.domain.User;
 
 import java.time.LocalDate;
 import java.util.Optional;

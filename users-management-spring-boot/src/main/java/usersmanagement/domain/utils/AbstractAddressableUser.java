@@ -1,4 +1,4 @@
-package usersmanagement.domain.users;
+package usersmanagement.domain.utils;
 
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;

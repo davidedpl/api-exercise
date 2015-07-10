@@ -1,8 +1,4 @@
-package usersmanagement.domain;
-
-import usersmanagement.domain.security.PermissionHolder;
-import usersmanagement.domain.security.UserPermission;
-import usersmanagement.domain.security.UserSecurityContext;
+package usersmanagement.domain.security;
 
 /**
  * Describes the different types of users and define their permissions.

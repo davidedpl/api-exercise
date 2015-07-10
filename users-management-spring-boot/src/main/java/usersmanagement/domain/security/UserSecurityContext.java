@@ -1,7 +1,5 @@
 package usersmanagement.domain.security;
 
-import usersmanagement.domain.UserType;
-
 import java.util.Optional;
 
 /**

@@ -3,7 +3,7 @@ package usersmanagement.repository;
 import org.springframework.stereotype.Repository;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.UserUpdateHelper;
+import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 

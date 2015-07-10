@@ -3,7 +3,7 @@ package usersmanagement.fixtures;
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
-import usersmanagement.domain.users.Users;
+import usersmanagement.domain.utils.Users;
 
 import java.time.LocalDate;
 

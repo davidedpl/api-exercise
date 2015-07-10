@@ -2,6 +2,7 @@ package usersmanagement.domain;
 
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
+import usersmanagement.domain.utils.UserUpdateHelper;
 
 import java.util.List;
 import java.util.Optional;

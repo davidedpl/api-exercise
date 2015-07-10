@@ -1,7 +1,7 @@
-package usersmanagement.domain.users;
+package usersmanagement.domain.utils;
 
 import usersmanagement.domain.User;
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.security.UserType;
 
 import java.time.LocalDate;
 
@@ -14,9 +14,9 @@ abstract class AbstractUser implements User {
     private final String firstName;
     private final String lastName;
     private final LocalDate dateOfBirth;
-    private final String email; // TODO validate email
-    private final char[] password; // TODO hash in SHA1
-    private final String username; // TODO explain -- add validation (letters and numbers only)
+    private final String email;
+    private final char[] password;
+    private final String username;
 
     AbstractUser(String lastName, String firstName, char[] password, String email, String title,
                         String username, LocalDate dateOfBirth) {
@@ -66,4 +66,5 @@ abstract class AbstractUser implements User {
     public final String getUsername() {
         return username;
     }
+
 }
