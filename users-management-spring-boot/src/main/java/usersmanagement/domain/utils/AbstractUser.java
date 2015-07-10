@@ -1,8 +1,10 @@
 package usersmanagement.domain.utils;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import usersmanagement.domain.User;
 import usersmanagement.domain.security.UserType;
 
+import javax.validation.ValidationException;
 import java.time.LocalDate;
 
 /**
@@ -24,6 +26,9 @@ abstract class AbstractUser implements User {
         this.firstName = firstName;
         this.password = password;
         this.email = email;
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw new ValidationException("Email: " + email);
+        }
         this.title = title;
         this.username = username;
         this.dateOfBirth = dateOfBirth;
