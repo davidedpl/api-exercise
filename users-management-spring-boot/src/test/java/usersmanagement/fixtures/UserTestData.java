@@ -36,6 +36,18 @@ public class UserTestData {
         );
     }
 
+    public static User adminUser() {
+        return Users.getAdmin(
+                "Lord",
+                "Admin",
+                "Istrator",
+                LocalDate.now(),
+                "admin@users.co.uk",
+                new char[]{'a', 'd', 'm', 'i', 'n'},
+                "admin"
+        );
+    }
+
     public static Address address1() {
         return new Address.AddressBuilder("1 High Road", "GB").withAddressLine2("London").build();
     }

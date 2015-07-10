@@ -4,7 +4,6 @@ import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -33,9 +32,10 @@ public interface UserRepository {
     /**
      * Update the user with the provided username.
      * @param username
+     * @param updateHelper contains the updated values
      * @throws UserNotFoundException if the user with the given username doesn't exist
      */
-    void update(String username, Map<String, Object> props);
+    void update(String username, UserUpdateHelper updateHelper);
 
     /**
      * Remove the user with the provided username from the repository.

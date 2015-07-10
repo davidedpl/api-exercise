@@ -3,6 +3,7 @@ package usersmanagement.repository;
 import org.springframework.stereotype.Repository;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
+import usersmanagement.domain.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 
@@ -23,7 +24,7 @@ public class UserRepositoryInMemory implements UserRepository {
 
     @Override
     public Optional<User> retrieve(String username) {
-        return Optional.ofNullable(users.get(username));
+        return Optional.ofNullable(readUser(username));
     }
 
     @Override
@@ -40,9 +41,13 @@ public class UserRepositoryInMemory implements UserRepository {
     }
 
     @Override
-    public void update(String username, Map<String, Object> props) {
-        // TODO
-        throw new UnsupportedOperationException();
+    public void update(String username, UserUpdateHelper updateHelper) {
+        User originalUser = readUser(username);
+        if (originalUser == null) {
+            throw new UserNotFoundException(username);
+        }
+        User updatedUser = updateHelper.updateUser(originalUser);
+        users.put(username, updatedUser);
     }
 
     @Override
@@ -50,6 +55,10 @@ public class UserRepositoryInMemory implements UserRepository {
         if (users.remove(username) == null) {
             throw new UserNotFoundException(username);
         }
+    }
+
+    private User readUser(String username) {
+        return users.get(username);
     }
 
 }

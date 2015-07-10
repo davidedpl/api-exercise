@@ -2,10 +2,7 @@ package usersmanagement.rest.v1;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.User;
-import usersmanagement.domain.UserAction;
-import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.*;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.domain.security.PermissionHolder;
 import usersmanagement.domain.security.UserSecurityContext;
@@ -89,16 +86,19 @@ public class UserRestController {
     public Response updateUser(
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username,
-            JsonNode updateUser) {
+            UserUpdateHelper updateUser) {
+
+        Optional<User> originalUser = userRepository.retrieve(username);
 
         validatePermission(clientUserRole.getPermissions(),
                 UserAction.CREATE,
                 new UserSecurityContext.UserSecurityContextBuilder()
-                        .withTargetUserType(null) //FIXME
+                        .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null))
                         .build());
 
-        // TODO
-        return Response.ok().build();
+        userRepository.update(username, updateUser);
+
+        return Response.ok(Response.Status.NO_CONTENT).build();
     }
 
     @DELETE
@@ -112,7 +112,7 @@ public class UserRestController {
                 new UserSecurityContext.UserSecurityContextBuilder().build());
 
         userRepository.delete(username);
-        return Response.ok().build();
+        return Response.ok(Response.Status.NO_CONTENT).build();
     }
 
     private void validatePermission(PermissionHolder permissionHolder,

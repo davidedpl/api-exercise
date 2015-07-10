@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
-@JsonInclude(NON_EMPTY)
+@JsonInclude(NON_EMPTY) // exclude optional fields from Json representation
 public final class Address {
 
     private final String addressLine1;
