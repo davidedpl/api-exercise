@@ -1,6 +1,7 @@
 package usersmanagement.rest.v1.exceptionmappers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -12,6 +13,8 @@ import javax.ws.rs.ext.Provider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 @Provider
 public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
 
@@ -22,7 +25,7 @@ public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable ex) {
 
-        LOG.error(ex.getMessage(), ex);
+        LOG.error(ex.getMessage());
 
         ErrorMessage errorMessage = new ErrorMessage(GENERIC_ERROR_CODE, getHttpStatus(ex), ex.getMessage());
         StringWriter errorStackTrace = new StringWriter();
@@ -42,6 +45,7 @@ public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
         }
     }
 
+    @JsonInclude(NON_EMPTY) // exclude optional fields from Json representation
     public static class ErrorMessage {
         private final int code;
         private final int status;

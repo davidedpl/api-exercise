@@ -3,7 +3,7 @@ package usersmanagement.domain.security;
 /**
  * Describes the different types of users and define their permissions.
  */
-public enum UserType {
+public enum UserType implements SecurityValidator {
 
     Subscriber((action, ctx) -> {
         switch (action) {

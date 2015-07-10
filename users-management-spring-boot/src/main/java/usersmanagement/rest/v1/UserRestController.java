@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.security.UserType;
-import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserNotFoundException;
+import usersmanagement.domain.security.SecurityValidatorFactory;
 import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserSecurityContext;
+import usersmanagement.domain.security.UserType;
+import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
 
@@ -32,13 +33,15 @@ public class UserRestController {
     private final UserRepository userRepository;
     private final CreateUserAssembler createUserAssembler;
     private final UserUpdateHelperAssembler userUpdateHelperAssembler;
+    private final SecurityValidatorFactory securityValidatorFactory;
 
     @Inject
     public UserRestController(UserRepository userRepository, CreateUserAssembler createUserAssembler,
-                              UserUpdateHelperAssembler userUpdateHelperAssembler) {
+                              UserUpdateHelperAssembler userUpdateHelperAssembler, SecurityValidatorFactory securityValidatorFactory) {
         this.userRepository = userRepository;
         this.createUserAssembler = createUserAssembler;
         this.userUpdateHelperAssembler = userUpdateHelperAssembler;
+        this.securityValidatorFactory = securityValidatorFactory;
     }
 
     @GET
@@ -50,7 +53,7 @@ public class UserRestController {
 
         Optional<User> user = userRepository.retrieve(username);
 
-        clientUserRole.validate(UserPermission.READ,
+        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.READ,
                 new UserSecurityContext.UserSecurityContextBuilder()
                         .withCurrentUserName(clientUserName)
                         .withTargetUsername(username)
@@ -68,7 +71,7 @@ public class UserRestController {
 
         User userToRegister = createUserAssembler.assemble(createUser);
 
-        clientUserRole.validate(UserPermission.CREATE,
+        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.CREATE,
                 new UserSecurityContext.UserSecurityContextBuilder()
                         .withCurrentUserName(clientUserName)
                         .withTargetUsername(userToRegister.getUsername())
@@ -90,7 +93,7 @@ public class UserRestController {
 
         Optional<User> originalUser = userRepository.retrieve(username);
 
-        clientUserRole.validate(UserPermission.CREATE,
+        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.CREATE,
                 new UserSecurityContext.UserSecurityContextBuilder()
                         .withTargetUserType(originalUser.map(u -> u.getType()).orElse(null)).build());
 
@@ -105,7 +108,7 @@ public class UserRestController {
             @HeaderParam("role") UserType clientUserRole,
             @PathParam("username") String username) {
 
-        clientUserRole.validate(UserPermission.DELETE,
+        securityValidatorFactory.createFor(clientUserRole).validate(UserPermission.DELETE,
                 new UserSecurityContext.UserSecurityContextBuilder().build());
 
         userRepository.delete(username);
