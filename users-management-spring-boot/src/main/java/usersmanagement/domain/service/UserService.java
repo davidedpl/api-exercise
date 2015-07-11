@@ -1,9 +1,10 @@
-package usersmanagement.domain;
+package usersmanagement.domain.service;
 
+import usersmanagement.domain.User;
 import usersmanagement.domain.security.UserType;
 import usersmanagement.domain.utils.UserUpdateHelper;
 
-public interface UserController {
+public interface UserService {
     User readUser(String clientUserName, UserType clientUserRole, String username);
 
     void registerUser(String clientUserName, UserType clientUserRole, User userToRegister);

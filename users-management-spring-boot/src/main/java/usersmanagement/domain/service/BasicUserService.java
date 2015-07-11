@@ -1,6 +1,8 @@
-package usersmanagement.domain;
+package usersmanagement.domain.service;
 
 import org.springframework.stereotype.Service;
+import usersmanagement.domain.User;
+import usersmanagement.domain.UserRepository;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.domain.security.SecurityValidator;
 import usersmanagement.domain.security.UserPermission;
@@ -12,12 +14,12 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 @Service
-class BasicUserController implements UserController {
+class BasicUserService implements UserService {
 
     private final UserRepository userRepository;
 
     @Inject
-    public BasicUserController(UserRepository userRepository) {
+    public BasicUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
