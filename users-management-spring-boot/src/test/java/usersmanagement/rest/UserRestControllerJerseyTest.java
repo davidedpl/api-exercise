@@ -4,12 +4,11 @@ import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import usersmanagement.JerseyConfig;
-import usersmanagement.domain.security.UserType;
+import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.service.UserService;
 import usersmanagement.fixtures.UserTestData;
 import usersmanagement.rest.v1.UserRestController;
@@ -19,7 +18,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -31,7 +29,7 @@ public class UserRestControllerJerseyTest extends JerseyTest {
         @Override
         public UserService provide() {
             final UserService mockedService = Mockito.mock(UserService.class);
-            Mockito.when(mockedService.readUser(anyString(), any(UserType.class), anyString()))
+            Mockito.when(mockedService.readUser(any(UserAuthenticationAttributes.class), anyString()))
                     .thenReturn(UserTestData.subscriberUser1());
 
 //                    .thenAnswer(new Answer<String>() {
@@ -63,13 +61,15 @@ public class UserRestControllerJerseyTest extends JerseyTest {
 
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-                usersmanagement.Application.class, JerseyConfig.class);
+//                usersmanagement.Application.class,
+                JerseyConfig.class);
         config.property("contextConfig", ctx);
 
-        config.property(TestProperties.RECORD_LOG_LEVEL, Level.INFO);
+//        config.property(TestProperties.RECORD_LOG_LEVEL, Level.INFO);
 
         return config;
     }
+
 
     @Test
     public void testMockedGreetingService() {
@@ -85,5 +85,10 @@ public class UserRestControllerJerseyTest extends JerseyTest {
 
         response.close();
         client.close();
+    }
+
+    @Test
+    public void readUserSuccessful() {
+
     }
 }

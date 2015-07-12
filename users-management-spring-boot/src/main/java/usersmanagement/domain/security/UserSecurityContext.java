@@ -1,5 +1,7 @@
 package usersmanagement.domain.security;
 
+import usersmanagement.domain.UserType;
+
 import java.util.Optional;
 
 /**
@@ -7,18 +9,21 @@ import java.util.Optional;
  */
 public final class UserSecurityContext {
 
-    private final String currentUsername;
+    private final UserAuthenticationAttributes authenticationAttributes;
     private final String targetUsername;
     private final UserType targetUserType;
 
     private UserSecurityContext(UserSecurityContextBuilder builder) {
-        this.currentUsername = builder.currentUsername;
+        this.authenticationAttributes = builder.authenticationAttributes;
         this.targetUsername = builder.targetUsername;
         this.targetUserType = builder.targetUserType;
     }
 
     public Optional<String> getCurrentUsername() {
-        return Optional.ofNullable(currentUsername);
+        return authenticationAttributes.getCurrentUsername();
+    }
+    public Optional<UserType> getCurrentUserType() {
+        return authenticationAttributes.getCurrentUserType();
     }
 
     public Optional<String> getTargetUsername() {
@@ -30,13 +35,15 @@ public final class UserSecurityContext {
     }
 
     public static class UserSecurityContextBuilder {
-        private String currentUsername;
         private String targetUsername;
         private UserType targetUserType;
+        private final UserAuthenticationAttributes authenticationAttributes;
 
-        public UserSecurityContextBuilder withCurrentUserName(String currentUsername) {
-            this.currentUsername = currentUsername;
-            return this;
+        public UserSecurityContextBuilder(UserAuthenticationAttributes authenticationAttributes) {
+            if (authenticationAttributes == null) {
+                throw new NullPointerException();
+            }
+            this.authenticationAttributes = authenticationAttributes;
         }
 
         public UserSecurityContextBuilder withTargetUsername(String targetUsername) {

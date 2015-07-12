@@ -1,15 +1,21 @@
 package usersmanagement.domain.service;
 
 import usersmanagement.domain.User;
-import usersmanagement.domain.security.UserType;
+import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.utils.UserUpdateHelper;
 
+/**
+ * Defines operations that can be executed on a User.
+ * Implementations of this class will provide the appropriate business-logic for each operation and
+ * will take care of security authorizations.
+ */
 public interface UserService {
-    User readUser(String clientUserName, UserType clientUserRole, String username);
+    User readUser(UserAuthenticationAttributes authenticationAttributes, String username);
 
-    void registerUser(String clientUserName, UserType clientUserRole, User userToRegister);
+    void registerUser(UserAuthenticationAttributes authenticationAttributes, User userToRegister);
 
-    void updateUser(UserType clientUserRole, String username, UserUpdateHelper updateHelper);
+    void updateUser(UserAuthenticationAttributes authenticationAttributes, String username,
+                    UserUpdateHelper updateHelper);
 
-    void deleteUser(UserType clientUserRole, String username);
+    void deleteUser(UserAuthenticationAttributes authenticationAttributes, String username);
 }

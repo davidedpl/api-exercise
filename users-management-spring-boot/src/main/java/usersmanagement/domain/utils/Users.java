@@ -3,7 +3,7 @@ package usersmanagement.domain.utils;
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
-import usersmanagement.domain.security.UserType;
+import usersmanagement.domain.UserType;
 
 import java.time.LocalDate;
 
