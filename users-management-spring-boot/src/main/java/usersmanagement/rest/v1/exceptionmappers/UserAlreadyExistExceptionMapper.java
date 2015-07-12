@@ -10,6 +10,6 @@ import javax.ws.rs.ext.Provider;
 public class UserAlreadyExistExceptionMapper implements ExceptionMapper<UserAlreadyExistException> {
     @Override
     public Response toResponse(UserAlreadyExistException e) {
-        return Response.status(Response.Status.CONFLICT).build(); // TODO complete
+        return Response.status(Response.Status.CONFLICT).build();
     }
 }
