@@ -13,7 +13,7 @@ import static usersmanagement.rest.v1.assembler.AssemblerUtils.*;
 
 
 @Component
-public class CreateUserAssembler implements Assembler<User> {
+public class CreateUserAssembler {
 
     private final AddressAssembler addressAssembler;
 
@@ -22,7 +22,6 @@ public class CreateUserAssembler implements Assembler<User> {
         this.addressAssembler = addressAssembler;
     }
 
-    @Override
     public User assemble(JsonNode node) {
         UserType type = getMandatoryEnum(node, UserType.class, "type");
         switch (type) {

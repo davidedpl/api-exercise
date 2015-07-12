@@ -5,13 +5,12 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import usersmanagement.JerseyConfig;
+import usersmanagement.config.JerseyConfig;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
-import usersmanagement.domain.service.UserService;
+import usersmanagement.domain.service.UserController;
 import usersmanagement.fixtures.UserTestData;
-import usersmanagement.rest.v1.UserRestController;
+import usersmanagement.rest.v1.UserRestResource;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,30 +21,22 @@ import javax.ws.rs.core.Response;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class UserRestControllerJerseyTest extends JerseyTest {
+public class UserRestResourceJerseyTest extends JerseyTest {
 
-    public static class MockUserServiceFactory implements Factory<UserService> {
+    public static class MockUserServiceFactory implements Factory<UserController> {
         @Override
-        public UserService provide() {
-            final UserService mockedService = Mockito.mock(UserService.class);
-            Mockito.when(mockedService.readUser(any(UserAuthenticationAttributes.class), anyString()))
+        public UserController provide() {
+            final UserController mockedController = mock(UserController.class);
+            when(mockedController.readUser(any(UserAuthenticationAttributes.class), anyString()))
                     .thenReturn(UserTestData.subscriberUser1());
-
-//                    .thenAnswer(new Answer<String>() {
-//                        @Override
-//                        public String answer(InvocationOnMock invocation)
-//                                throws Throwable {
-//                            String name = (String) invocation.getArguments()[0];
-//                            return "Hello " + name;
-//                        }
-//
-//                    });
-            return mockedService;
+            return mockedController;
         }
 
         @Override
-        public void dispose(UserService t) {}
+        public void dispose(UserController t) {}
     }
 
     @Override
@@ -53,10 +44,10 @@ public class UserRestControllerJerseyTest extends JerseyTest {
         AbstractBinder binder = new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(MockUserServiceFactory.class).to(UserService.class);
+                bindFactory(MockUserServiceFactory.class).to(UserController.class);
             }
         };
-        ResourceConfig config = new ResourceConfig(UserRestController.class);
+        ResourceConfig config = new ResourceConfig(UserRestResource.class);
         config.register(binder);
 
 
@@ -64,8 +55,6 @@ public class UserRestControllerJerseyTest extends JerseyTest {
 //                usersmanagement.Application.class,
                 JerseyConfig.class);
         config.property("contextConfig", ctx);
-
-//        config.property(TestProperties.RECORD_LOG_LEVEL, Level.INFO);
 
         return config;
     }

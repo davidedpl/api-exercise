@@ -1,6 +1,8 @@
-package usersmanagement.domain.security;
+package usersmanagement.fixtures;
 
 import usersmanagement.domain.UserType;
+import usersmanagement.domain.security.UserAuthenticationAttributes;
+import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.domain.security.UserSecurityContext.UserSecurityContextBuilder;
 
 public class SecurityTestData {

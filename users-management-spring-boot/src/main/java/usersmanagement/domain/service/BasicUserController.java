@@ -13,14 +13,18 @@ import usersmanagement.domain.security.UserSecurityContext;
 import javax.inject.Inject;
 import java.util.Optional;
 
+/**
+ * This implementation validate user's permission and, if successfully authorized, continue
+ * executing the operation on the Repository.
+ */
 @Service
-class BasicUserService implements UserService {
+class BasicUserController implements UserController {
 
     private final UserRepository userRepository;
     private final UserPermissionsValidator userPermissionsValidator;
 
     @Inject
-    public BasicUserService(UserRepository userRepository, UserPermissionsValidator userPermissionsValidator) {
+    public BasicUserController(UserRepository userRepository, UserPermissionsValidator userPermissionsValidator) {
         this.userRepository = userRepository;
         this.userPermissionsValidator = userPermissionsValidator;
     }

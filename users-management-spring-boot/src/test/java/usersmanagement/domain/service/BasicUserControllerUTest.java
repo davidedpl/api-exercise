@@ -8,10 +8,8 @@ import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.security.UserPermissionsValidator;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
-import usersmanagement.domain.security.UserPermission;
-import usersmanagement.domain.security.UserSecurityContext;
+import usersmanagement.domain.security.UserPermissionsValidator;
 import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 
@@ -20,14 +18,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BasicUserServiceUTest {
+public class BasicUserControllerUTest {
 
     @Mock private UserRepository userRepository;
-    private BasicUserService userService;
+    private BasicUserController userService;
 
     private static final UserAuthenticationAttributes EMPTY_AUTH_ATTRIBUTES = new UserAuthenticationAttributes();
     private static final String ANY_USER_NAME = "test";
@@ -150,7 +151,7 @@ public class BasicUserServiceUTest {
 
 
     private void given(UserRepository userRepository, UserPermissionsValidator userPermissionsValidator) {
-        userService = new BasicUserService(userRepository, userPermissionsValidator);
+        userService = new BasicUserController(userRepository, userPermissionsValidator);
     }
 
     private UserRepository userExists(User user) {
@@ -193,20 +194,14 @@ public class BasicUserServiceUTest {
     }
 
     private UserPermissionsValidator permissionValidationSuccess() {
-        return new UserPermissionsValidator() {
-            @Override
-            public void validate(UserPermission action, UserSecurityContext ctx) throws SecurityException {
-                // do nothing to confirm validation
-            }
+        return (action, ctx) -> {
+            // do nothing to confirm validation
         };
     }
 
     private UserPermissionsValidator permissionValidationFails() {
-        return new UserPermissionsValidator() {
-            @Override
-            public void validate(UserPermission action, UserSecurityContext ctx) throws SecurityException {
-                throw new SecurityException();
-            }
+        return (action, ctx) -> {
+            throw new SecurityException();
         };
     }
 }

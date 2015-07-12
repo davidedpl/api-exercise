@@ -10,8 +10,7 @@ import static usersmanagement.rest.v1.assembler.AssemblerUtils.getMandatoryStrin
 import static usersmanagement.rest.v1.assembler.AssemblerUtils.getString;
 
 @Component
-public class AddressAssembler implements Assembler<Optional<Address>> {
-    @Override
+public class AddressAssembler {
     public Optional<Address> assemble(JsonNode node) {
         if (node != null) {
             Address.AddressBuilder builder = new Address.AddressBuilder(

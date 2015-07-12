@@ -3,9 +3,9 @@ package usersmanagement.rest.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import usersmanagement.domain.User;
-import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.UserType;
-import usersmanagement.domain.service.UserService;
+import usersmanagement.domain.security.UserAuthenticationAttributes;
+import usersmanagement.domain.service.UserController;
 import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
@@ -19,26 +19,24 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 @Component
-@Path(UserRestController.PATH)
+@Path(UserRestResource.PATH)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 //@Produces(RepresentationFactory.HAL_JSON)
-public class UserRestController {
+public class UserRestResource {
 
     public final static String PATH = "/v1/users";
 
     private final CreateUserAssembler createUserAssembler;
     private final UserUpdateHelperAssembler userUpdateHelperAssembler;
-    private final UserService userService;
+    private final UserController userController;
 
     @Inject
-    public UserRestController(
-//            CreateUserAssembler createUserAssembler,
-//                              UserUpdateHelperAssembler userUpdateHelperAssembler,
-            UserService userService) {
-        this.createUserAssembler = null;
-        this.userUpdateHelperAssembler = null;
-        this.userService = userService;
+    public UserRestResource(
+            CreateUserAssembler createUserAssembler, UserUpdateHelperAssembler userUpdateHelperAssembler, UserController userController) {
+        this.createUserAssembler = createUserAssembler;
+        this.userUpdateHelperAssembler = userUpdateHelperAssembler;
+        this.userController = userController;
     }
 
     @GET
@@ -48,7 +46,7 @@ public class UserRestController {
             @HeaderParam("type") UserType clientUserType,
             @PathParam("username") String username) {
         return Response.ok(
-                userService.readUser(new UserAuthenticationAttributes(clientUserName, clientUserType), username))
+                userController.readUser(new UserAuthenticationAttributes(clientUserName, clientUserType), username))
                 .build();
     }
 
@@ -59,7 +57,7 @@ public class UserRestController {
             @Context UriInfo uriInfo,
             JsonNode createUser) {
         User userToRegister = createUserAssembler.assemble(createUser);
-        userService.registerUser(new UserAuthenticationAttributes(clientUserType), userToRegister);
+        userController.registerUser(new UserAuthenticationAttributes(clientUserType), userToRegister);
         URI userUri = uriInfo.getBaseUriBuilder().path(PATH + "/" + userToRegister.getUsername()).build();
         return Response.created(userUri).build();
     }
@@ -71,7 +69,7 @@ public class UserRestController {
             @PathParam("username") String username,
             JsonNode updateUser) {
         UserUpdateHelper updateHelper = userUpdateHelperAssembler.assemble(updateUser);
-        userService.updateUser(new UserAuthenticationAttributes(clientUserType), username, updateHelper);
+        userController.updateUser(new UserAuthenticationAttributes(clientUserType), username, updateHelper);
         return Response.ok(Response.Status.NO_CONTENT).build();
     }
 
@@ -80,7 +78,7 @@ public class UserRestController {
     public Response deleteUser(
             @HeaderParam("type") UserType clientUserType,
             @PathParam("username") String username) {
-        userService.deleteUser(new UserAuthenticationAttributes(clientUserType), username);
+        userController.deleteUser(new UserAuthenticationAttributes(clientUserType), username);
         return Response.ok(Response.Status.NO_CONTENT).build();
     }
 

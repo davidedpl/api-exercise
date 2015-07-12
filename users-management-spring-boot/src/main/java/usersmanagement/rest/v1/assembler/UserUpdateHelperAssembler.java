@@ -10,7 +10,7 @@ import static usersmanagement.rest.v1.assembler.AssemblerUtils.getLocalDate;
 import static usersmanagement.rest.v1.assembler.AssemblerUtils.getString;
 
 @Component
-public class UserUpdateHelperAssembler implements Assembler<UserUpdateHelper> {
+public class UserUpdateHelperAssembler {
 
     private final AddressAssembler addressAssembler;
 
@@ -19,7 +19,6 @@ public class UserUpdateHelperAssembler implements Assembler<UserUpdateHelper> {
         this.addressAssembler = addressAssembler;
     }
 
-    @Override
     public UserUpdateHelper assemble(JsonNode node) {
         return new UserUpdateHelper(
                 getString(node, "title"),

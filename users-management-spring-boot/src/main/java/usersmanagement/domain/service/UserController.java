@@ -9,7 +9,7 @@ import usersmanagement.domain.utils.UserUpdateHelper;
  * Implementations of this class will provide the appropriate business-logic for each operation and
  * will take care of security authorizations.
  */
-public interface UserService {
+public interface UserController {
     User readUser(UserAuthenticationAttributes authenticationAttributes, String username);
 
     void registerUser(UserAuthenticationAttributes authenticationAttributes, User userToRegister);

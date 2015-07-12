@@ -2,8 +2,9 @@ package usersmanagement.domain.security;
 
 import org.junit.Assert;
 import org.junit.Test;
+import usersmanagement.fixtures.SecurityTestData;
 
-import static usersmanagement.domain.security.SecurityTestData.*;
+import static usersmanagement.fixtures.SecurityTestData.*;
 
 public class TypeBasedUserPermissionValidatorUTest {
 
