@@ -33,7 +33,8 @@ public class UserRestResource {
 
     @Inject
     public UserRestResource(
-            CreateUserAssembler createUserAssembler, UserUpdateHelperAssembler userUpdateHelperAssembler, UserController userController) {
+            CreateUserAssembler createUserAssembler, UserUpdateHelperAssembler userUpdateHelperAssembler,
+            UserController userController) {
         this.createUserAssembler = createUserAssembler;
         this.userUpdateHelperAssembler = userUpdateHelperAssembler;
         this.userController = userController;

@@ -2,7 +2,7 @@ package usersmanagement.domain.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
@@ -14,55 +14,52 @@ import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BasicUserControllerUTest {
 
-    @Mock private UserRepository userRepository;
+    private UserRepository userRepository;
     private BasicUserController userService;
 
-    private static final UserAuthenticationAttributes EMPTY_AUTH_ATTRIBUTES = new UserAuthenticationAttributes();
-    private static final String ANY_USER_NAME = "test";
+    private static final UserAuthenticationAttributes SOME_AUTH_ATTRIBUTES = new UserAuthenticationAttributes();
     private static final User USER_THAT_EXISTS = UserTestData.subscriberUser1();
-//    private static final User USER_THAT_NOT_EXISTS = UserTestData.subscriberUser1();
-    private static final UserUpdateHelper ANY_USER_UPDATE_HELPER = UserUpdateHelper.emptyHelper();
+    private static final String SOME_USER_NAME = "someusername";
+    private static final UserUpdateHelper SOME_USER_UPDATE_HELPER = UserUpdateHelper.emptyHelper();
 
     // read user tests
 
     @Test
     public void read_UserExists_Authorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationSuccess());
-        User retrievedUser = userService.readUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS.getUsername());
+        given(userExists(), permissionValidationSuccess());
+        User retrievedUser = userService.readUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME);
         assertEquals(USER_THAT_EXISTS, retrievedUser);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void read_UserNotExists_Authorized() {
         given(userDoesntExist(), permissionValidationSuccess());
-        userService.readUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
+        userService.readUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME);
     }
 
     @Test(expected = SecurityException.class)
     public void read_UserExists_NotAuthorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationFails());
-        userService.readUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
-        // TODO use catchexception and verify interactions
+        given(userExists(), permissionValidationFails());
+        userService.readUser(SOME_AUTH_ATTRIBUTES, USER_THAT_EXISTS.getUsername());
     }
 
     @Test(expected = SecurityException.class)
     public void read_UserNotExists_NotAuthorized() {
         given(userDoesntExist(), permissionValidationFails());
-        userService.readUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
-        // TODO use catchexception and verify interactions
+        userService.readUser(SOME_AUTH_ATTRIBUTES, USER_THAT_EXISTS.getUsername());
     }
 
 
@@ -70,26 +67,27 @@ public class BasicUserControllerUTest {
 
     @Test(expected = UserAlreadyExistException.class)
     public void register_UserExists_Authorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationSuccess());
-        userService.registerUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+        given(userExists(), permissionValidationSuccess());
+        userService.registerUser(SOME_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
     }
 
     @Test
     public void register_UserNotExists_Authorized() {
         given(userDoesntExist(), permissionValidationSuccess());
-        userService.registerUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+        userService.registerUser(SOME_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+        verify(userRepository).create(USER_THAT_EXISTS);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void register_UserExists_NotAuthorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationFails());
-        userService.registerUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+        given(userExists(), permissionValidationFails());
+        expectedSecurityExceptionOnCreation();
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void register_UserNotExists_NotAuthorized() {
         given(userDoesntExist(), permissionValidationFails());
-        userService.registerUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+        expectedSecurityExceptionOnCreation();
     }
 
 
@@ -97,100 +95,87 @@ public class BasicUserControllerUTest {
 
     @Test
     public void update_UserExists_Authorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationSuccess());
-        userService.updateUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME, ANY_USER_UPDATE_HELPER);
+        given(userExists(), permissionValidationSuccess());
+        userService.updateUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME, SOME_USER_UPDATE_HELPER);
+        verify(userRepository).update(SOME_USER_NAME, SOME_USER_UPDATE_HELPER);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void update_UserNotExists_Authorized() {
         given(userDoesntExist(), permissionValidationSuccess());
-        userService.updateUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME, ANY_USER_UPDATE_HELPER);
+        userService.updateUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME, SOME_USER_UPDATE_HELPER);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void update_UserExists_NotAuthorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationFails());
-        userService.updateUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME, ANY_USER_UPDATE_HELPER);
+        given(userExists(), permissionValidationFails());
+        expectedSecurityExceptionOnUpdate();
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void update_UserNotExists_NotAuthorized() {
         given(userDoesntExist(), permissionValidationFails());
-        userService.updateUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME, ANY_USER_UPDATE_HELPER);
+        expectedSecurityExceptionOnUpdate();
     }
-
 
 
     // delete user tests
 
     @Test
     public void delete_UserExists_Authorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationSuccess());
-        userService.deleteUser(EMPTY_AUTH_ATTRIBUTES, USER_THAT_EXISTS.getUsername());
-        verify(userRepository, only()).delete(USER_THAT_EXISTS.getUsername());
+        given(userExists(), permissionValidationSuccess());
+        userService.deleteUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME);
+        verify(userRepository).delete(SOME_USER_NAME);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void delete_UserNotExists_Authorized() {
         given(userDoesntExist(), permissionValidationSuccess());
-        userService.deleteUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
+        userService.deleteUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME);
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void delete_UserExists_NotAuthorized() {
-        given(userExists(USER_THAT_EXISTS), permissionValidationFails());
-        userService.deleteUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
+        given(userExists(), permissionValidationFails());
+        expectedSecurityExceptionOnDelete();
     }
 
-    @Test(expected = SecurityException.class)
+    @Test
     public void delete_UserNotExists_NotAuthorized() {
         given(userDoesntExist(), permissionValidationFails());
-        userService.deleteUser(EMPTY_AUTH_ATTRIBUTES, ANY_USER_NAME);
+        expectedSecurityExceptionOnDelete();
     }
 
 
-
-    private void given(UserRepository userRepository, UserPermissionsValidator userPermissionsValidator) {
+    private void given(Supplier<UserRepository> userRepositorySupplier,
+                       UserPermissionsValidator userPermissionsValidator) {
+        userRepository = userRepositorySupplier.get();
         userService = new BasicUserController(userRepository, userPermissionsValidator);
     }
 
-    private UserRepository userExists(User user) {
-        doThrow(new UserAlreadyExistException(user.getUsername())).when(userRepository).create(user);
-        when(userRepository.retrieve(anyString())).thenReturn(Optional.of(user));
-        when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.singletonList(user));
-        doNothing().when(userRepository).update(eq(user.getUsername()), any(UserUpdateHelper.class));
-        doNothing().when(userRepository).delete(user.getUsername());
-        return userRepository;
+    private Supplier<UserRepository> userExists() {
+        return () -> {
+            UserRepository userRepository = Mockito.mock(UserRepository.class);
+            doThrow(new UserAlreadyExistException(SOME_USER_NAME)).when(userRepository).create(USER_THAT_EXISTS);
+            when(userRepository.retrieve(anyString())).thenReturn(Optional.of(USER_THAT_EXISTS));
+            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.singletonList(USER_THAT_EXISTS));
+            doNothing().when(userRepository).update(anyString(), any(UserUpdateHelper.class));
+            doNothing().when(userRepository).delete(anyString());
+            return userRepository;
+        };
     }
 
-    private UserRepository userDoesntExist() {
-        return new UserRepository() {
-            @Override
-            public void create(User user) {
-                // operation executed without errors
-            }
-            @Override
-            public Optional<User> retrieve(String username) {
-                return Optional.empty();
-            }
-            @Override
-            public List<User> retrieveRange(int offset, int limit) {
-                return Collections.emptyList();
-            }
-            @Override
-            public void update(String username, UserUpdateHelper updateHelper) {
-                throw new UserNotFoundException(username);
-            }
-            @Override
-            public void delete(String username) {
-                throw new UserNotFoundException(username);
-            }
+    private Supplier<UserRepository> userDoesntExist() {
+        return () -> {
+            UserRepository userRepository = Mockito.mock(UserRepository.class);
+            doNothing().when(userRepository).create(any(User.class));
+            when(userRepository.retrieve(anyString())).thenReturn(Optional.empty());
+            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.EMPTY_LIST);
+            doThrow(new UserNotFoundException(SOME_USER_NAME)).when(userRepository)
+                    .update(anyString(), any(UserUpdateHelper.class));
+            doThrow(new UserNotFoundException(SOME_USER_NAME)).when(userRepository).delete(anyString());
+            return userRepository;
         };
-//                when(userRepository.create(user)).thenThrow(new UserAlreadyExistException(user.getUsername()));
-//        when(userRepository.retrieve(anyString())).thenReturn(Optional.empty());
-//        when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.EMPTY_LIST);
-//        when(userRepository.update(user.getUsername(), any(UserUpdateHelper.class)));
-//        return userRepository;
     }
 
     private UserPermissionsValidator permissionValidationSuccess() {
@@ -203,5 +188,31 @@ public class BasicUserControllerUTest {
         return (action, ctx) -> {
             throw new SecurityException();
         };
+    }
+
+    private void expectedSecurityExceptionOnCreation() {
+        try {
+            userService.registerUser(SOME_AUTH_ATTRIBUTES, USER_THAT_EXISTS);
+            fail("Expected SecurityException");
+        } catch (SecurityException e) {
+            verify(userRepository, never()).create(any(User.class));
+        }
+    }
+
+    private void expectedSecurityExceptionOnUpdate() {
+        try {
+            userService.updateUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME, SOME_USER_UPDATE_HELPER);
+            fail("Expected SecurityException");
+        } catch (SecurityException e) {
+            verify(userRepository, never()).update(anyString(), any(UserUpdateHelper.class));
+        }
+    }
+    private void expectedSecurityExceptionOnDelete() {
+        try {
+            userService.deleteUser(SOME_AUTH_ATTRIBUTES, SOME_USER_NAME);
+            fail("Expected SecurityException");
+        } catch (SecurityException e) {
+            verify(userRepository, never()).delete(anyString());
+        }
     }
 }
