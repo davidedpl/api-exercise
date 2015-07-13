@@ -12,6 +12,8 @@ import java.time.LocalDate;
  */
 abstract class AbstractUser implements User {
 
+    private static final String USERNAME_VALIDATION_REGEX = "^[a-zA-Z0-9]+$";
+
     private final String title;
     private final String firstName;
     private final String lastName;
@@ -31,6 +33,9 @@ abstract class AbstractUser implements User {
         }
         this.title = title;
         this.username = username;
+        if (!username.matches(USERNAME_VALIDATION_REGEX)) {
+            throw new ValidationException("Username: " + username);
+        }
         this.dateOfBirth = dateOfBirth;
     }
 
