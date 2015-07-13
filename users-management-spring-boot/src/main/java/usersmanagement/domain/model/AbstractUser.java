@@ -8,7 +8,7 @@ import java.time.LocalDate;
 /**
  * Support implementation for a generic user.
  */
-abstract class AbstractUser implements User {
+abstract class AbstractUser implements UpdatableUser {
 
     private static final String USERNAME_VALIDATION_REGEX = "^[a-zA-Z0-9]+$";
 

@@ -2,29 +2,31 @@ package usersmanagement.infrastructure;
 
 import org.junit.Before;
 import org.junit.Test;
-import usersmanagement.domain.model.Addressable;
-import usersmanagement.domain.model.AddressableUser;
-import usersmanagement.domain.model.User;
+import usersmanagement.domain.model.*;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.model.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 import usersmanagement.infrastructure.repository.UserRepositoryInMemory;
+
+import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserRepositoryInMemoryUTest {
 
-    protected UserRepositoryInMemory userRepository;
-    protected static final AddressableUser notExistingUser = UserTestData.subscriberUser2();
-    protected AddressableUser createdUser;
-    protected User createdAdmin;
+    private static final AddressableUser notExistingUser = UserTestData.subscriberUser2();
+    private UserRepositoryInMemory userRepository;
+    private User createdUser;
+    private User createdAdmin;
+    private User notUpdatableUser;
+
 
     @Before
     public void init() {
         userRepository = new UserRepositoryInMemory();
-        createdUser = createSubscriber1();
-        createdAdmin = createAdmin();
+        createdUser = createUser(UserTestData.subscriberUser1());
+        createdAdmin = createUser(UserTestData.adminUser());
+        notUpdatableUser = createUser(new NotUpdatableUser());
     }
 
     @Test
@@ -62,7 +64,7 @@ public class UserRepositoryInMemoryUTest {
 
     @Test
     public void retrieveAllWithResults() {
-        assertEquals(2, userRepository.retrieveAll().size());
+        assertEquals(3, userRepository.retrieveAll().size());
     }
 
     @Test
@@ -73,7 +75,7 @@ public class UserRepositoryInMemoryUTest {
 
     @Test
     public void updateUser_Success() {
-        UserUpdateHelper updateHelper = UserUpdateHelper.fromAddressableUser(notExistingUser);
+        UserUpdateHelper updateHelper = UserUpdateHelper.fromUser(notExistingUser);
         userRepository.update(createdUser.getUsername(), updateHelper);
         assertUpdateWithAddress(createdUser, updateHelper);
     }
@@ -98,18 +100,16 @@ public class UserRepositoryInMemoryUTest {
         userRepository.update(notExistingUser.getUsername(), UserUpdateHelper.emptyHelper());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void updateUserNotUpdatable() {
+        userRepository.update(notUpdatableUser.getUsername(), UserUpdateHelper.emptyHelper());
+    }
+
     private void initWithEmptyRepository() {
         userRepository = new UserRepositoryInMemory();
     }
 
-    protected AddressableUser createSubscriber1() {
-        AddressableUser user = UserTestData.subscriberUser1();
-        userRepository.create(user);
-        return user;
-    }
-
-    protected User createAdmin() {
-        User user = UserTestData.adminUser();
+    private User createUser(User user) {
         userRepository.create(user);
         return user;
     }
@@ -133,14 +133,15 @@ public class UserRepositoryInMemoryUTest {
         assertEquals(false, userRepository.retrieve(username).isPresent());
     }
 
-    private void assertUpdateWithAddress(AddressableUser originalUser, UserUpdateHelper updateHelper) {
+    private void assertUpdateWithAddress(User originalUser, UserUpdateHelper updateHelper) {
+        AddressableUser originalAddressableUser = ((AddressableUser) originalUser);
         AddressableUser updatedUser = (AddressableUser) userRepository.retrieve(createdUser.getUsername()).get();
-        assertUpdate(updatedUser, originalUser, updateHelper);
+        assertUpdate(updatedUser, originalAddressableUser, updateHelper);
         assertEquals(
-                updateHelper.getHomeAddress().orElse(originalUser.getHomeAddress()),
+                updateHelper.getHomeAddress().orElse(originalAddressableUser.getHomeAddress()),
                 updatedUser.getHomeAddress());
         assertEquals(
-                updateHelper.getBillingAddress().orElse(originalUser.getBillingAddress()),
+                updateHelper.getBillingAddress().orElse(originalAddressableUser.getBillingAddress()),
                 updatedUser.getBillingAddress());
     }
 
@@ -162,5 +163,48 @@ public class UserRepositoryInMemoryUTest {
         // unchanged attributes
         assertEquals(originalUser.getUsername(), updatedUser.getUsername());
         assertEquals(originalUser.getType(), updatedUser.getType());
+    }
+
+    private static class NotUpdatableUser implements User {
+        private static final String NAME = "notupdatable";
+        @Override
+        public UserType getType() {
+            return null;
+        }
+
+        @Override
+        public String getTitle() {
+            return null;
+        }
+
+        @Override
+        public String getFirstName() {
+            return null;
+        }
+
+        @Override
+        public String getLastName() {
+            return null;
+        }
+
+        @Override
+        public LocalDate getDateOfBirth() {
+            return null;
+        }
+
+        @Override
+        public String getEmail() {
+            return null;
+        }
+
+        @Override
+        public String getPassword() {
+            return null;
+        }
+
+        @Override
+        public String getUsername() {
+            return NAME;
+        }
     }
 }

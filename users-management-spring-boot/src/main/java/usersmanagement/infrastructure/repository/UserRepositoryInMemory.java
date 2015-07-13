@@ -1,6 +1,7 @@
 package usersmanagement.infrastructure.repository;
 
 import org.springframework.stereotype.Repository;
+import usersmanagement.domain.model.UpdatableUser;
 import usersmanagement.domain.model.User;
 import usersmanagement.domain.repository.UserRepository;
 import usersmanagement.domain.model.UserUpdateHelper;
@@ -38,7 +39,10 @@ public class UserRepositoryInMemory implements UserRepository {
         if (originalUser == null) {
             throw new UserNotFoundException(username);
         }
-        User updatedUser = updateHelper.updateUser(originalUser);
+        if (!(originalUser instanceof UpdatableUser)) {
+            throw new UnsupportedOperationException("User " + username + " doesn't support the update");
+        }
+        User updatedUser = ((UpdatableUser) originalUser).update(updateHelper);
         users.put(username, updatedUser);
     }
 

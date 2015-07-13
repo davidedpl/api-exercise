@@ -3,6 +3,9 @@ package usersmanagement.domain.model;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * Commodity class that contains all the optional information that can be used to update a User.
+ */
 public class UserUpdateHelper {
 
     private final Optional<String> title;
@@ -11,7 +14,6 @@ public class UserUpdateHelper {
     private final Optional<LocalDate> dateOfBirth;
     private final Optional<String> email;
     private final Optional<String> password;
-
     private final Optional<Address> homeAddress;
     private final Optional<Address> billingAddress;
 
@@ -27,25 +29,15 @@ public class UserUpdateHelper {
     }
 
     public static UserUpdateHelper fromUser(User user) {
-        return new UserUpdateHelper(user.getTitle(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getDateOfBirth(),
-                user.getEmail(),
-                user.getPassword(),
-                user instanceof Addressable ? ((Addressable) user).getHomeAddress() : null,
-                user instanceof Addressable ? ((Addressable) user).getBillingAddress() : null);
-    }
-
-    public static UserUpdateHelper fromAddressableUser(AddressableUser user) {
-        return new UserUpdateHelper(user.getTitle(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getDateOfBirth(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getHomeAddress(),
-                user.getBillingAddress());
+        return new UserUpdateHelper(
+                Optional.ofNullable(user.getTitle()),
+                Optional.ofNullable(user.getFirstName()),
+                Optional.ofNullable(user.getLastName()),
+                Optional.ofNullable(user.getDateOfBirth()),
+                Optional.ofNullable(user.getEmail()),
+                Optional.ofNullable(user.getPassword()),
+                Optional.ofNullable(user instanceof Addressable ? ((Addressable) user).getHomeAddress() : null),
+                Optional.ofNullable(user instanceof Addressable ? ((Addressable) user).getBillingAddress() : null));
     }
 
     public UserUpdateHelper(Optional<String> title,
@@ -64,53 +56,6 @@ public class UserUpdateHelper {
         this.password = password;
         this.homeAddress = homeAddress;
         this.billingAddress = billingAddress;
-    }
-
-    public UserUpdateHelper(String title,
-                            String firstName,
-                            String lastName,
-                            LocalDate dateOfBirth,
-                            String email,
-                            String password,
-                            Address homeAddress,
-                            Address billingAddress) {
-        this.title = Optional.ofNullable(title);
-        this.firstName = Optional.ofNullable(firstName);
-        this.lastName = Optional.ofNullable(lastName);
-        this.dateOfBirth = Optional.ofNullable(dateOfBirth);
-        this.email = Optional.ofNullable(email);
-        this.password = Optional.ofNullable(password);
-        this.homeAddress = Optional.ofNullable(homeAddress);
-        this.billingAddress = Optional.ofNullable(billingAddress);
-    }
-
-    public User updateUser(User originalUser) {
-        switch (originalUser.getType()) {
-            case Subscriber:
-                return Users.getSubscriber(
-                        title.orElse(originalUser.getTitle()),
-                        lastName.orElse(originalUser.getLastName()),
-                        firstName.orElse(originalUser.getFirstName()),
-                        dateOfBirth.orElse(originalUser.getDateOfBirth()),
-                        email.orElse(originalUser.getEmail()),
-                        password.orElse(originalUser.getPassword()),
-                        originalUser.getUsername(),
-                        homeAddress.orElse(((Addressable)originalUser).getHomeAddress()),
-                        billingAddress.orElse(((Addressable)originalUser).getBillingAddress())
-                );
-            case Administrator:
-                return Users.getAdmin(
-                        title.orElse(originalUser.getTitle()),
-                        lastName.orElse(originalUser.getFirstName()),
-                        firstName.orElse(originalUser.getLastName()),
-                        dateOfBirth.orElse(originalUser.getDateOfBirth()),
-                        email.orElse(originalUser.getEmail()),
-                        password.orElse(originalUser.getPassword()),
-                        originalUser.getUsername()
-                );
-            default:
-                throw new UnsupportedOperationException("Unable to update user of type: " + originalUser.getType());
-        }
     }
 
     public Optional<String> getTitle() {

@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.Collection;
 
 /**
- * RESTful resource operating on Users.
+ * RESTfull resource operating on Users.
  * Business operations are delegated to the UserController.
  * Security headers 'type' and 'username' are accepted and passed to the controller to verify authorizations.
  */
