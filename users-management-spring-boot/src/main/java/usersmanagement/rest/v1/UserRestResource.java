@@ -53,9 +53,13 @@ public class UserRestResource {
     }
 
     @GET
-    public Response readAllUsers(@HeaderParam("type") UserType clientUserType, @Context UriInfo uriInfo) {
+    public Response readAllUsers(
+            @HeaderParam("type") UserType clientUserType,
+            @HeaderParam("username") String clientUserName,
+            @Context UriInfo uriInfo) {
         try {
-            Collection<User> users = userController.readAll(new UserAuthenticationAttributes(clientUserType));
+            Collection<User> users = userController
+                    .readAll(new UserAuthenticationAttributes(clientUserName, clientUserType));
             return Response.ok(new UsersCollectionResponse(users, uriInfo)).build();
         } catch (Throwable t) {
             return mapException(t);
@@ -86,7 +90,7 @@ public class UserRestResource {
             JsonNode createUser) {
         try {
             User userToRegister = createUserAssembler.assemble(createUser);
-            userController.registerUser(new UserAuthenticationAttributes(clientUserType), userToRegister);
+            userController.registerUser(new UserAuthenticationAttributes(clientUserName, clientUserType), userToRegister);
             URI userUri = uriInfo.getBaseUriBuilder().path(PATH + "/" + userToRegister.getUsername()).build();
             return Response.created(userUri).build();
         } catch (Throwable t) {
