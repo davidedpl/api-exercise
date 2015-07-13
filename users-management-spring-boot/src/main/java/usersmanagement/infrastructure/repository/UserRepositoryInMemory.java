@@ -1,9 +1,9 @@
-package usersmanagement.infrastructure;
+package usersmanagement.infrastructure.repository;
 
 import org.springframework.stereotype.Repository;
-import usersmanagement.domain.User;
-import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.user.UserUpdateHelper;
+import usersmanagement.domain.model.User;
+import usersmanagement.domain.repository.UserRepository;
+import usersmanagement.domain.model.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 

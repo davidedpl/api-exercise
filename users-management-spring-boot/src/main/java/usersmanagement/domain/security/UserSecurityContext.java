@@ -1,6 +1,6 @@
 package usersmanagement.domain.security;
 
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.model.UserType;
 
 import java.util.Optional;
 
@@ -36,10 +36,11 @@ public final class UserSecurityContext {
 
     public static class UserSecurityContextBuilder {
         private String targetUsername;
-        private UserType targetUserType;
+        private final UserType targetUserType;
         private final UserAuthenticationAttributes authenticationAttributes;
 
-        public UserSecurityContextBuilder(UserAuthenticationAttributes authenticationAttributes) {
+        public UserSecurityContextBuilder(UserType targetUserType, UserAuthenticationAttributes authenticationAttributes) {
+            this.targetUserType = targetUserType;
             if (authenticationAttributes == null) {
                 throw new NullPointerException();
             }
@@ -48,11 +49,6 @@ public final class UserSecurityContext {
 
         public UserSecurityContextBuilder withTargetUsername(String targetUsername) {
             this.targetUsername = targetUsername;
-            return this;
-        }
-
-        public UserSecurityContextBuilder withTargetUserType(UserType targetUserType) {
-            this.targetUserType = targetUserType;
             return this;
         }
 

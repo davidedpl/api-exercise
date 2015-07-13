@@ -1,9 +1,9 @@
 package usersmanagement.rest.v1.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import usersmanagement.domain.Address;
-import usersmanagement.domain.Addressable;
-import usersmanagement.domain.User;
+import usersmanagement.domain.model.Address;
+import usersmanagement.domain.model.Addressable;
+import usersmanagement.domain.model.User;
 import usersmanagement.rest.v1.UserRestResource;
 
 import javax.ws.rs.core.UriBuilder;

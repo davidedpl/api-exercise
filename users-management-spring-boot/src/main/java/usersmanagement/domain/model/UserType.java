@@ -1,4 +1,4 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 /**
  * Describes the different types of users.

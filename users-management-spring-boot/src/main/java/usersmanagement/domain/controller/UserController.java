@@ -1,8 +1,8 @@
 package usersmanagement.domain.controller;
 
-import usersmanagement.domain.User;
+import usersmanagement.domain.model.User;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
-import usersmanagement.domain.user.UserUpdateHelper;
+import usersmanagement.domain.model.UserUpdateHelper;
 
 import java.util.Collection;
 

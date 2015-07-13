@@ -1,4 +1,4 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 /**
  * Describes a user with address details.

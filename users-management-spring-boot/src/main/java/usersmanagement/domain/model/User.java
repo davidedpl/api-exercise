@@ -1,4 +1,4 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 import java.time.LocalDate;
 

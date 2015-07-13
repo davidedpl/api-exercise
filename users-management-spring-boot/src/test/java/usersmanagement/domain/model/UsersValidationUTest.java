@@ -1,7 +1,7 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 import org.junit.Test;
-import usersmanagement.domain.user.Users;
+import usersmanagement.domain.model.Users;
 import usersmanagement.fixtures.UserTestData;
 
 import javax.validation.ValidationException;

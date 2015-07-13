@@ -1,6 +1,6 @@
 package usersmanagement.domain.security;
 
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.model.UserType;
 
 import java.util.Optional;
 

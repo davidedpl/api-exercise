@@ -1,4 +1,4 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 /**
  * Provides access to home and billing address

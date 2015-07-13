@@ -1,8 +1,9 @@
-package usersmanagement.domain;
+package usersmanagement.domain.repository;
 
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.user.UserUpdateHelper;
+import usersmanagement.domain.model.User;
+import usersmanagement.domain.model.UserUpdateHelper;
 
 import java.util.Collection;
 import java.util.Optional;

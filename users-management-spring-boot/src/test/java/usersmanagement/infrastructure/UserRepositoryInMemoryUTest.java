@@ -2,13 +2,14 @@ package usersmanagement.infrastructure;
 
 import org.junit.Before;
 import org.junit.Test;
-import usersmanagement.domain.Addressable;
-import usersmanagement.domain.AddressableUser;
-import usersmanagement.domain.User;
+import usersmanagement.domain.model.Addressable;
+import usersmanagement.domain.model.AddressableUser;
+import usersmanagement.domain.model.User;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.user.UserUpdateHelper;
+import usersmanagement.domain.model.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
+import usersmanagement.infrastructure.repository.UserRepositoryInMemory;
 
 import static org.junit.Assert.assertEquals;
 

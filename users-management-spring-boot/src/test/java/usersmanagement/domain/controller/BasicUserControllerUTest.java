@@ -4,15 +4,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import usersmanagement.domain.User;
-import usersmanagement.domain.UserRepository;
+import usersmanagement.domain.model.User;
+import usersmanagement.domain.repository.UserRepository;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserPermissionsValidator;
 import usersmanagement.domain.security.UserSecurityContext;
-import usersmanagement.domain.user.UserUpdateHelper;
+import usersmanagement.domain.model.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class BasicUserControllerUTest {
     private static final User OTHER_USER_THAT_EXISTS = UserTestData.adminUser();
     private static final String SOME_USER_NAME = "someusername";
     private static final UserUpdateHelper SOME_USER_UPDATE_HELPER = UserUpdateHelper.emptyHelper();
-    private final static Collection<User> MULTIPLE_USERS = new ArrayList<User>();
+    private final static Collection<User> MULTIPLE_USERS = new ArrayList<>();
     static {
         Collections.addAll(MULTIPLE_USERS, USER_THAT_EXISTS, OTHER_USER_THAT_EXISTS);
     }

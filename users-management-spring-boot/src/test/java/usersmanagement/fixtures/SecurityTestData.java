@@ -1,6 +1,6 @@
 package usersmanagement.fixtures;
 
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.model.UserType;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.domain.security.UserSecurityContext.UserSecurityContextBuilder;
@@ -12,46 +12,50 @@ public class SecurityTestData {
 
 
     // useful UserSecurityContextBuilders
-    private static final UserSecurityContextBuilder ctxSubscriber = new UserSecurityContextBuilder(
-            new UserAuthenticationAttributes(SUBSCRIBER_AUTHENTICATED_NAME, UserType.Subscriber));
+    private static final UserAuthenticationAttributes attrSubscriber =
+            new UserAuthenticationAttributes(SUBSCRIBER_AUTHENTICATED_NAME, UserType.Subscriber);
 
-    private static final UserSecurityContextBuilder ctxAdmin = new UserSecurityContextBuilder(
-            new UserAuthenticationAttributes(UserType.Administrator));
+    private static final UserAuthenticationAttributes attrAdmin =
+            new UserAuthenticationAttributes(UserType.Administrator);
 
-    private static final UserSecurityContextBuilder ctxSuper = new UserSecurityContextBuilder(
-            new UserAuthenticationAttributes(UserType.SuperUser));
+    private static final UserAuthenticationAttributes attrSuper =
+            new UserAuthenticationAttributes(UserType.SuperUser);
 
 
     // applying auth attributes to different targets
 
     public static final UserSecurityContext ctxWithNullType =
-            new UserSecurityContextBuilder(new UserAuthenticationAttributes()).build();
+            new UserSecurityContextBuilder(null, new UserAuthenticationAttributes()).build();
 
 
     public static final UserSecurityContext ctxSubscriberOnHimSelf =
-            ctxSubscriber.withTargetUsername(SUBSCRIBER_AUTHENTICATED_NAME).build();
+            new UserSecurityContextBuilder(
+                    UserType.Subscriber, attrSubscriber).withTargetUsername(SUBSCRIBER_AUTHENTICATED_NAME).build();
 
     public static final UserSecurityContext ctxSubscriberOnOther =
-            ctxSubscriber.withTargetUsername(SUBSCRIBER_OTHER_NAME).build();
+            new UserSecurityContextBuilder(
+                    UserType.Administrator, attrSubscriber).withTargetUsername(SUBSCRIBER_OTHER_NAME).build();
 
-    public static final UserSecurityContext ctxSubscriberOnAny = ctxSubscriber.build();
+    public static final UserSecurityContext ctxSubscriberOnAny =
+            new UserSecurityContextBuilder(null, attrSubscriber).build();
 
 
     public static final UserSecurityContext ctxAdminOnSubscriber =
-            ctxAdmin.withTargetUserType(UserType.Subscriber).build();
+            new UserSecurityContextBuilder(UserType.Subscriber, attrAdmin).build();
 
     public static final UserSecurityContext ctxAdminOnNonSubscriber =
-            ctxAdmin.withTargetUserType(UserType.Administrator).build();
+            new UserSecurityContextBuilder(UserType.Administrator, attrAdmin).build();
 
-    public static final UserSecurityContext ctxAdminOnAny = ctxAdmin.build();
+    public static final UserSecurityContext ctxAdminOnAny =
+            new UserSecurityContextBuilder(null, attrAdmin).build();
 
 
     public static final UserSecurityContext ctxSuperOnSubscriber =
-            ctxSuper.withTargetUserType(UserType.Subscriber).build();
+            new UserSecurityContextBuilder(UserType.Subscriber, attrSuper).build();
 
     public static final UserSecurityContext ctxSuperOnAdmin =
-            ctxSuper.withTargetUserType(UserType.Administrator).build();
+            new UserSecurityContextBuilder(UserType.Administrator, attrSuper).build();
 
     public static final UserSecurityContext ctxSuperOnSuper =
-            ctxSuper.withTargetUserType(UserType.SuperUser).build();
+            new UserSecurityContextBuilder(UserType.SuperUser, attrSuper).build();
 }

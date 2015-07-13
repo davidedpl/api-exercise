@@ -2,7 +2,7 @@ package usersmanagement.rest.v1.assembler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.Address;
+import usersmanagement.domain.model.Address;
 
 import java.util.Optional;
 
@@ -17,8 +17,8 @@ public class AddressAssembler {
                     getMandatoryString(node, "addressLine1"),
                     getMandatoryString(node, "country")
             );
-            getString(node, "addressLine2").ifPresent(s -> builder.withAddressLine2(s));
-            getString(node, "postCode").ifPresent(s -> builder.withPostCode(s));
+            getString(node, "addressLine2").ifPresent(builder::withAddressLine2);
+            getString(node, "postCode").ifPresent(builder::withPostCode);
             return Optional.of(builder.build());
         }
         return Optional.empty();

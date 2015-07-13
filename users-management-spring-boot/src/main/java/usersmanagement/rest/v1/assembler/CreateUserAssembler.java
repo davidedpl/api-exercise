@@ -3,9 +3,9 @@ package usersmanagement.rest.v1.assembler;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.User;
-import usersmanagement.domain.UserType;
-import usersmanagement.domain.user.Users;
+import usersmanagement.domain.model.User;
+import usersmanagement.domain.model.UserType;
+import usersmanagement.domain.model.Users;
 
 import javax.inject.Inject;
 import javax.validation.ValidationException;

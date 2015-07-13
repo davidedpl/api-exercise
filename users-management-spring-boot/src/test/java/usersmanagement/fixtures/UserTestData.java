@@ -1,9 +1,9 @@
 package usersmanagement.fixtures;
 
-import usersmanagement.domain.Address;
-import usersmanagement.domain.AddressableUser;
-import usersmanagement.domain.User;
-import usersmanagement.domain.user.Users;
+import usersmanagement.domain.model.Address;
+import usersmanagement.domain.model.AddressableUser;
+import usersmanagement.domain.model.User;
+import usersmanagement.domain.model.Users;
 
 import java.time.LocalDate;
 

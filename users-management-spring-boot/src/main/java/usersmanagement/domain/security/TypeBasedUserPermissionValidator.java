@@ -1,7 +1,7 @@
 package usersmanagement.domain.security;
 
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.UserType;
+import usersmanagement.domain.model.UserType;
 
 /**
  * Authorizes users' operations with a logic based on user-types.

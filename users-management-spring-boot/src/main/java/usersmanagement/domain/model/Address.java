@@ -1,4 +1,4 @@
-package usersmanagement.domain;
+package usersmanagement.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.util.StringUtils;

@@ -1,6 +1,6 @@
 package usersmanagement.rest.v1.dto;
 
-import usersmanagement.domain.User;
+import usersmanagement.domain.model.User;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.*;

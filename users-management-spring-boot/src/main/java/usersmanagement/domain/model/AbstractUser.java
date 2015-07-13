@@ -1,8 +1,6 @@
-package usersmanagement.domain.user;
+package usersmanagement.domain.model;
 
 import org.apache.commons.validator.routines.EmailValidator;
-import usersmanagement.domain.User;
-import usersmanagement.domain.UserType;
 
 import javax.validation.ValidationException;
 import java.time.LocalDate;
