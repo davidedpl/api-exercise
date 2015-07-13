@@ -1,4 +1,4 @@
-package usersmanagement.domain.utils;
+package usersmanagement.domain.user;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import usersmanagement.domain.User;
@@ -17,10 +17,10 @@ abstract class AbstractUser implements User {
     private final String lastName;
     private final LocalDate dateOfBirth;
     private final String email;
-    private final char[] password;
+    private final String password;
     private final String username;
 
-    AbstractUser(String lastName, String firstName, char[] password, String email, String title,
+    AbstractUser(String lastName, String firstName, String password, String email, String title,
                         String username, LocalDate dateOfBirth) {
         this.lastName = lastName;
         this.firstName = firstName;
@@ -63,7 +63,7 @@ abstract class AbstractUser implements User {
     }
 
     @Override
-    public final char[] getPassword() {
+    public final String getPassword() {
         return password;
     }
 

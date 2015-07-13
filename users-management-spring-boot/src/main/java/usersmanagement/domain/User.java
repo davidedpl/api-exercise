@@ -1,8 +1,5 @@
 package usersmanagement.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-
 import java.time.LocalDate;
 
 /**
@@ -18,12 +15,11 @@ public interface User {
 
     String getLastName();
 
-    @JsonSerialize(using = ToStringSerializer.class)
     LocalDate getDateOfBirth();
 
     String getEmail();
 
-    char[] getPassword();
+    String getPassword();
 
     String getUsername();
 

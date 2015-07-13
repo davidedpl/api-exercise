@@ -8,7 +8,7 @@ import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserPermissionsValidator;
 import usersmanagement.domain.security.UserSecurityContext.UserSecurityContextBuilder;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -30,9 +30,9 @@ class BasicUserController implements UserController {
     }
 
     @Override
-    public List<User> readAll(UserAuthenticationAttributes authenticationAttributes) {
-        List<User> result = new ArrayList<>();
-        List<User> users = userRepository.retrieveRange(0, 10);
+    public Collection<User> readAll(UserAuthenticationAttributes authenticationAttributes) {
+        Collection<User> result = new ArrayList<>();
+        Collection<User> users = userRepository.retrieveAll();
         if (users.size() > 0) {
             UserSecurityContextBuilder ctxBuilder = new UserSecurityContextBuilder(authenticationAttributes);
             for (User user : users) {

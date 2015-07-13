@@ -3,7 +3,7 @@ package usersmanagement.infrastructure;
 import org.springframework.stereotype.Repository;
 import usersmanagement.domain.User;
 import usersmanagement.domain.UserRepository;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 
@@ -28,16 +28,8 @@ public class UserRepositoryInMemory implements UserRepository {
     }
 
     @Override
-    public List<User> retrieveRange(int offset, int limit) {
-        List<User> result = new ArrayList<>();
-        Iterator<User> it = users.values().iterator();
-        for (int i = 0; i < offset + limit && it.hasNext(); i++) {
-            User user = it.next();
-            if (i >= offset) {
-                result.add(user);
-            }
-        }
-        return result;
+    public Collection<User> retrieveAll() {
+        return users.values();
     }
 
     @Override

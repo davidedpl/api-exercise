@@ -1,4 +1,4 @@
-package usersmanagement.domain.utils;
+package usersmanagement.domain.user;
 
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
@@ -15,7 +15,7 @@ public class Users {
     private Users() { }
 
     public static AddressableUser getSubscriber(String title, String lastName, String firstName, LocalDate dateOfBirth,
-                                                String email, char[] password, String username,
+                                                String email, String password, String username,
                                                 Address homeAddress, Address billingAddress) {
         return new AbstractAddressableUser(lastName, firstName, password, email,
                 title, username, dateOfBirth, homeAddress, billingAddress) {
@@ -27,7 +27,7 @@ public class Users {
     }
 
     public static User getAdmin(String title, String lastName, String firstName, LocalDate dateOfBirth,
-                                String email, char[] password, String username) {
+                                String email, String password, String username) {
         return new AbstractUser(lastName, firstName, password, email, title, username, dateOfBirth) {
             @Override
             public UserType getType() {

@@ -12,19 +12,18 @@ import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserPermissionsValidator;
 import usersmanagement.domain.security.UserSecurityContext;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +38,7 @@ public class BasicUserControllerUTest {
     private static final User OTHER_USER_THAT_EXISTS = UserTestData.adminUser();
     private static final String SOME_USER_NAME = "someusername";
     private static final UserUpdateHelper SOME_USER_UPDATE_HELPER = UserUpdateHelper.emptyHelper();
-    private final static List<User> MULTIPLE_USERS = new ArrayList<User>();
+    private final static Collection<User> MULTIPLE_USERS = new ArrayList<User>();
     static {
         Collections.addAll(MULTIPLE_USERS, USER_THAT_EXISTS, OTHER_USER_THAT_EXISTS);
     }
@@ -50,38 +49,38 @@ public class BasicUserControllerUTest {
     @Test
     public void readAll_UserExists_Authorized() {
         given(userExists(), permissionValidationSuccess());
-        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        Collection<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
         assertEquals(1, retrievedUsers.size());
-        assertEquals(USER_THAT_EXISTS, retrievedUsers.get(0));
+        assertEquals(USER_THAT_EXISTS, retrievedUsers.iterator().next());
     }
 
     @Test
     public void readAll_UserNotExists_Authorized() {
         given(userDoesntExist(), permissionValidationSuccess());
-        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        Collection<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
         assertEquals(0, retrievedUsers.size());
     }
 
     @Test
     public void readAll_UserExists_NotAuthorized() {
         given(userExists(), permissionValidationFails());
-        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        Collection<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
         assertEquals(0, retrievedUsers.size());
     }
 
     @Test
     public void readAll_UserNotExists_NotAuthorized() {
         given(userDoesntExist(), permissionValidationFails());
-        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        Collection<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
         assertEquals(0, retrievedUsers.size());
     }
 
     @Test
     public void readAll_MultipleUsersExist_PartiallyAuthorized() {
         given(multipleUserExists(), permissionValidationPartiallyAuthorized());
-        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        Collection<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
         assertEquals(1, retrievedUsers.size());
-        assertEquals(OTHER_USER_THAT_EXISTS, retrievedUsers.get(0));
+        assertEquals(OTHER_USER_THAT_EXISTS, retrievedUsers.iterator().next());
     }
 
 
@@ -208,7 +207,7 @@ public class BasicUserControllerUTest {
             UserRepository userRepository = Mockito.mock(UserRepository.class);
             doThrow(new UserAlreadyExistException(SOME_USER_NAME)).when(userRepository).create(USER_THAT_EXISTS);
             when(userRepository.retrieve(anyString())).thenReturn(Optional.of(USER_THAT_EXISTS));
-            when(userRepository.retrieveRange(anyInt(), anyInt()))
+            when(userRepository.retrieveAll())
                     .thenReturn(Collections.singletonList(USER_THAT_EXISTS));
             doNothing().when(userRepository).update(anyString(), any(UserUpdateHelper.class));
             doNothing().when(userRepository).delete(anyString());
@@ -219,7 +218,7 @@ public class BasicUserControllerUTest {
     private Supplier<UserRepository> multipleUserExists() {
         return () -> {
             UserRepository userRepository = userExists().get();
-            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(MULTIPLE_USERS);
+            when(userRepository.retrieveAll()).thenReturn(MULTIPLE_USERS);
             return userRepository;
         };
     }
@@ -229,7 +228,7 @@ public class BasicUserControllerUTest {
             UserRepository userRepository = Mockito.mock(UserRepository.class);
             doNothing().when(userRepository).create(any(User.class));
             when(userRepository.retrieve(anyString())).thenReturn(Optional.empty());
-            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.EMPTY_LIST);
+            when(userRepository.retrieveAll()).thenReturn(Collections.EMPTY_LIST);
             doThrow(new UserNotFoundException(SOME_USER_NAME)).when(userRepository)
                     .update(anyString(), any(UserUpdateHelper.class));
             doThrow(new UserNotFoundException(SOME_USER_NAME)).when(userRepository).delete(anyString());

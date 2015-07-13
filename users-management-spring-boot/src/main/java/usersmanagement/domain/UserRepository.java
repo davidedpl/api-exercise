@@ -2,9 +2,9 @@ package usersmanagement.domain;
 
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -26,12 +26,9 @@ public interface UserRepository {
     Optional<User> retrieve(String username);
 
     /**
-     * Retrieve all the users in the specified range.
-     * @param offset first user in the range (starts from 0)
-     * @param limit max users in the range
-     * @return
+     * Retrieve all the users in the database.
      */
-    List<User> retrieveRange(int offset, int limit);
+    Collection<User> retrieveAll();
 
     /**
      * Update the user with the provided username.

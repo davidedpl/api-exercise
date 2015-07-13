@@ -1,4 +1,4 @@
-package usersmanagement.domain.utils;
+package usersmanagement.domain.user;
 
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
@@ -13,7 +13,7 @@ abstract class AbstractAddressableUser extends AbstractUser implements Addressab
     private final Address homeAddress;
     private final Address billingAddress;
 
-    AbstractAddressableUser(String lastName, String firstName, char[] password, String email,
+    AbstractAddressableUser(String lastName, String firstName, String password, String email,
                                    String title, String username, LocalDate dateOfBirth,
                                    Address homeAddress, Address billingAddress) {
         super(lastName, firstName, password, email, title, username, dateOfBirth);

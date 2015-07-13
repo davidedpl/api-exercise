@@ -3,7 +3,7 @@ package usersmanagement.fixtures;
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
-import usersmanagement.domain.utils.Users;
+import usersmanagement.domain.user.Users;
 
 import java.time.LocalDate;
 
@@ -16,7 +16,7 @@ public class UserTestData {
                 "John",
                 LocalDate.parse("2015-01-05"),
                 "john@doe.co.uk",
-                new char[]{'p', 'w', 'd'},
+                "pwd",
                 "johndoe",
                 addressFull(),
                 addressBasic()
@@ -30,7 +30,7 @@ public class UserTestData {
                 "Jane",
                 LocalDate.parse("2015-08-07"),
                 "jane@clark.co.uk",
-                new char[]{'1', '2', '3'},
+                "123",
                 "janeclark",
                 addressBasic(),
                 addressFull()
@@ -44,7 +44,7 @@ public class UserTestData {
                 "Admin",
                 LocalDate.parse("2018-08-08"),
                 "admin@users.co.uk",
-                new char[]{'a', 'd', 'm', 'i', 'n'},
+                "admin",
                 "admin"
         );
     }
@@ -56,7 +56,7 @@ public class UserTestData {
                 "Ross",
                 LocalDate.parse("1980-08-08"),
                 "admin2@users.co.uk",
-                new char[]{'a', 'd', 'm', 'i', 'n', '2'},
+                "admin2",
                 "admin2"
         );
     }

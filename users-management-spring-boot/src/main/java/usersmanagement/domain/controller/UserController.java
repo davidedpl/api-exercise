@@ -2,9 +2,9 @@ package usersmanagement.domain.controller;
 
 import usersmanagement.domain.User;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Defines operations that can be executed on a User.
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface UserController {
 
-    List<User> readAll(UserAuthenticationAttributes authenticationAttributes);
+    Collection<User> readAll(UserAuthenticationAttributes authenticationAttributes);
 
     User readUser(UserAuthenticationAttributes authenticationAttributes, String username);
 

@@ -2,7 +2,7 @@ package usersmanagement.rest.v1.assembler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
-import usersmanagement.domain.utils.UserUpdateHelper;
+import usersmanagement.domain.user.UserUpdateHelper;
 
 import javax.inject.Inject;
 
@@ -26,7 +26,7 @@ public class UserUpdateHelperAssembler {
                 getString(node, "lastName"),
                 getLocalDate(node, "dateOfBirth"),
                 getString(node, "email"),
-                getString(node, "password").map(String::toCharArray),
+                getString(node, "password"),
                 addressAssembler.assemble(node.get("homeAddress")),
                 addressAssembler.assemble(node.get("billingAddress"))
         );

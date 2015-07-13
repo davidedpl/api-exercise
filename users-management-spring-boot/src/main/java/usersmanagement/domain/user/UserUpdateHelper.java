@@ -1,4 +1,4 @@
-package usersmanagement.domain.utils;
+package usersmanagement.domain.user;
 
 import usersmanagement.domain.Address;
 import usersmanagement.domain.Addressable;
@@ -15,7 +15,7 @@ public class UserUpdateHelper {
     private final Optional<String> lastName;
     private final Optional<LocalDate> dateOfBirth;
     private final Optional<String> email;
-    private final Optional<char[]> password;
+    private final Optional<String> password;
 
     private final Optional<Address> homeAddress;
     private final Optional<Address> billingAddress;
@@ -58,7 +58,7 @@ public class UserUpdateHelper {
                             Optional<String> lastName,
                             Optional<LocalDate> dateOfBirth,
                             Optional<String> email,
-                            Optional<char[]> password,
+                            Optional<String> password,
                             Optional<Address> homeAddress,
                             Optional<Address> billingAddress) {
         this.title = title;
@@ -76,7 +76,7 @@ public class UserUpdateHelper {
                             String lastName,
                             LocalDate dateOfBirth,
                             String email,
-                            char[] password,
+                            String password,
                             Address homeAddress,
                             Address billingAddress) {
         this.title = Optional.ofNullable(title);
@@ -138,7 +138,7 @@ public class UserUpdateHelper {
         return email;
     }
 
-    public Optional<char[]> getPassword() {
+    public Optional<String> getPassword() {
         return password;
     }
 
