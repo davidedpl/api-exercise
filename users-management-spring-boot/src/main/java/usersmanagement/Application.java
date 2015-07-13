@@ -3,6 +3,9 @@ package usersmanagement;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
+/**
+ * Entry point to start up this application.
+ */
 @SpringBootApplication
 public class Application {
 

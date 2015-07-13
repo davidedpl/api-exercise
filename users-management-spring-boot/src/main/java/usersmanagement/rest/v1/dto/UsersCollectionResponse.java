@@ -5,6 +5,10 @@ import usersmanagement.domain.model.User;
 import javax.ws.rs.core.UriInfo;
 import java.util.*;
 
+/**
+ * Definition of a Collection of Users entity returned as response of a call to the
+ * REST interface of the application.
+ */
 public class UsersCollectionResponse {
 
     private final Map<String, Collection<UserResponse>> _embedded = new HashMap<>();

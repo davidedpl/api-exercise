@@ -14,6 +14,9 @@ import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
+/**
+ * Definition of the User entity returned as response of a call to the REST interface of the application.
+ */
 @JsonInclude(NON_EMPTY) // exclude optional fields from Json representation
 public class UserResponse {
 

@@ -9,6 +9,9 @@ import usersmanagement.rest.v1.assembler.AddressAssembler;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
 
+/**
+ * Configure Jersey environment.
+ */
 @Component
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
