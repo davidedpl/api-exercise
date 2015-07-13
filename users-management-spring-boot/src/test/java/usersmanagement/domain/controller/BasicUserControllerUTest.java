@@ -1,4 +1,4 @@
-package usersmanagement.domain.service;
+package usersmanagement.domain.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,11 +9,15 @@ import usersmanagement.domain.UserRepository;
 import usersmanagement.domain.exceptions.UserAlreadyExistException;
 import usersmanagement.domain.exceptions.UserNotFoundException;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
+import usersmanagement.domain.security.UserPermission;
 import usersmanagement.domain.security.UserPermissionsValidator;
+import usersmanagement.domain.security.UserSecurityContext;
 import usersmanagement.domain.utils.UserUpdateHelper;
 import usersmanagement.fixtures.UserTestData;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -32,8 +36,54 @@ public class BasicUserControllerUTest {
 
     private static final UserAuthenticationAttributes SOME_AUTH_ATTRIBUTES = new UserAuthenticationAttributes();
     private static final User USER_THAT_EXISTS = UserTestData.subscriberUser1();
+    private static final User OTHER_USER_THAT_EXISTS = UserTestData.adminUser();
     private static final String SOME_USER_NAME = "someusername";
     private static final UserUpdateHelper SOME_USER_UPDATE_HELPER = UserUpdateHelper.emptyHelper();
+    private final static List<User> MULTIPLE_USERS = new ArrayList<User>();
+    static {
+        Collections.addAll(MULTIPLE_USERS, USER_THAT_EXISTS, OTHER_USER_THAT_EXISTS);
+    }
+
+
+    // read all user tests
+
+    @Test
+    public void readAll_UserExists_Authorized() {
+        given(userExists(), permissionValidationSuccess());
+        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        assertEquals(1, retrievedUsers.size());
+        assertEquals(USER_THAT_EXISTS, retrievedUsers.get(0));
+    }
+
+    @Test
+    public void readAll_UserNotExists_Authorized() {
+        given(userDoesntExist(), permissionValidationSuccess());
+        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        assertEquals(0, retrievedUsers.size());
+    }
+
+    @Test
+    public void readAll_UserExists_NotAuthorized() {
+        given(userExists(), permissionValidationFails());
+        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        assertEquals(0, retrievedUsers.size());
+    }
+
+    @Test
+    public void readAll_UserNotExists_NotAuthorized() {
+        given(userDoesntExist(), permissionValidationFails());
+        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        assertEquals(0, retrievedUsers.size());
+    }
+
+    @Test
+    public void readAll_MultipleUsersExist_PartiallyAuthorized() {
+        given(multipleUserExists(), permissionValidationPartiallyAuthorized());
+        List<User> retrievedUsers = userService.readAll(SOME_AUTH_ATTRIBUTES);
+        assertEquals(1, retrievedUsers.size());
+        assertEquals(OTHER_USER_THAT_EXISTS, retrievedUsers.get(0));
+    }
+
 
     // read user tests
 
@@ -158,9 +208,18 @@ public class BasicUserControllerUTest {
             UserRepository userRepository = Mockito.mock(UserRepository.class);
             doThrow(new UserAlreadyExistException(SOME_USER_NAME)).when(userRepository).create(USER_THAT_EXISTS);
             when(userRepository.retrieve(anyString())).thenReturn(Optional.of(USER_THAT_EXISTS));
-            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(Collections.singletonList(USER_THAT_EXISTS));
+            when(userRepository.retrieveRange(anyInt(), anyInt()))
+                    .thenReturn(Collections.singletonList(USER_THAT_EXISTS));
             doNothing().when(userRepository).update(anyString(), any(UserUpdateHelper.class));
             doNothing().when(userRepository).delete(anyString());
+            return userRepository;
+        };
+    }
+
+    private Supplier<UserRepository> multipleUserExists() {
+        return () -> {
+            UserRepository userRepository = userExists().get();
+            when(userRepository.retrieveRange(anyInt(), anyInt())).thenReturn(MULTIPLE_USERS);
             return userRepository;
         };
     }
@@ -187,6 +246,18 @@ public class BasicUserControllerUTest {
     private UserPermissionsValidator permissionValidationFails() {
         return (action, ctx) -> {
             throw new SecurityException();
+        };
+    }
+
+    private UserPermissionsValidator permissionValidationPartiallyAuthorized() {
+        return new UserPermissionsValidator() {
+            private int c = 0;
+            @Override
+            public void validate(UserPermission action, UserSecurityContext ctx) throws SecurityException {
+                if ((c++ % 2) == 0) {
+                    throw new SecurityException();
+                }
+            }
         };
     }
 

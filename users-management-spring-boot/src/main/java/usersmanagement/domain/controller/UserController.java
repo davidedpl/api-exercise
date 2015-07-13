@@ -1,8 +1,10 @@
-package usersmanagement.domain.service;
+package usersmanagement.domain.controller;
 
 import usersmanagement.domain.User;
 import usersmanagement.domain.security.UserAuthenticationAttributes;
 import usersmanagement.domain.utils.UserUpdateHelper;
+
+import java.util.List;
 
 /**
  * Defines operations that can be executed on a User.
@@ -10,6 +12,9 @@ import usersmanagement.domain.utils.UserUpdateHelper;
  * will take care of security authorizations.
  */
 public interface UserController {
+
+    List<User> readAll(UserAuthenticationAttributes authenticationAttributes);
+
     User readUser(UserAuthenticationAttributes authenticationAttributes, String username);
 
     void registerUser(UserAuthenticationAttributes authenticationAttributes, User userToRegister);
