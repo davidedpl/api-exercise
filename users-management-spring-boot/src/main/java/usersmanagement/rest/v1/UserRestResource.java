@@ -17,15 +17,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Component
 @Path(UserRestResource.PATH)
 @Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-//@Produces(RepresentationFactory.HAL_JSON)
+@Produces("application/hal+json")
 public class UserRestResource {
 
     public final static String PATH = "/v1/users";
+    public final static String PATH_WITH_ID = PATH + "/{username}";
 
     private final CreateUserAssembler createUserAssembler;
     private final UserUpdateHelperAssembler userUpdateHelperAssembler;
@@ -41,13 +42,23 @@ public class UserRestResource {
     }
 
     @GET
+    public Response readAllUsers(@HeaderParam("type") UserType clientUserType) {
+        return Response.ok(
+                userController.readAll(new UserAuthenticationAttributes(clientUserType)))
+                .build();
+    }
+
+    @GET
     @Path("{username}")
     public Response readUser(
             @HeaderParam("username") String clientUserName,
             @HeaderParam("type") UserType clientUserType,
-            @PathParam("username") String username) {
+            @PathParam("username") String username,
+            @Context UriInfo uriInfo) {
+        final User retrievedUser = userController
+                .readUser(new UserAuthenticationAttributes(clientUserName, clientUserType), username);
         return Response.ok(
-                userController.readUser(new UserAuthenticationAttributes(clientUserName, clientUserType), username))
+                getUserRepresentation(retrievedUser, uriInfo))
                 .build();
     }
 
@@ -71,7 +82,7 @@ public class UserRestResource {
             JsonNode updateUser) {
         UserUpdateHelper updateHelper = userUpdateHelperAssembler.assemble(updateUser);
         userController.updateUser(new UserAuthenticationAttributes(clientUserType), username, updateHelper);
-        return Response.ok(Response.Status.NO_CONTENT).build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @DELETE
@@ -80,7 +91,40 @@ public class UserRestResource {
             @HeaderParam("type") UserType clientUserType,
             @PathParam("username") String username) {
         userController.deleteUser(new UserAuthenticationAttributes(clientUserType), username);
-        return Response.ok(Response.Status.NO_CONTENT).build();
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+
+    private Object getUserRepresentation(User user, UriInfo uriInfo) {
+//        Representation representation = representationFactory.newRepresentation(
+//                UriBuilder.fromUri(uriInfo.getBaseUri()).path(UserRestResource.PATH_WITH_ID)
+//                        .build(String.valueOf(user.getUsername())).toString());
+//
+//        representation.withProperty("type", user.getType());
+//        representation.withProperty("title", user.getTitle());
+//        representation.withProperty("firstName", user.getFirstName());
+//        representation.withProperty("lastName", user.getLastName());
+//        representation.withProperty("dateOfBirth", user.getDateOfBirth().toString());
+//        representation.withProperty("email", user.getEmail());
+//
+//        if (user instanceof Addressable) {
+//            representation.withProperty("homeAddress", ((Addressable) user).getHomeAddress());
+//            representation.withProperty("billingAddress", ((Addressable) user).getHomeAddress());
+//        }
+
+        return null;
+    }
+
+    private Object getUsersCollectionRepresentation(List<User> users, UriInfo uriInfo) {
+        // pagination attributes
+        // query self link
+
+        // embedded
+        for (User user : users) {
+            getUserRepresentation(user, uriInfo);
+        }
+
+        return null;
     }
 
 }

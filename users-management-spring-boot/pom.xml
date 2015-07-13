@@ -30,10 +30,6 @@
 		</dependency>
         <!--<dependency>-->
             <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
             <!--<artifactId>spring-boot-starter-hateoas</artifactId>-->
         <!--</dependency>-->
         <dependency>
@@ -56,29 +52,17 @@
             <artifactId>spring-boot-starter-jetty</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.google.guava</groupId>-->
-            <!--<artifactId>guava</artifactId>-->
-            <!--<version>18.0</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>com.h2database</groupId>-->
-            <!--<artifactId>h2</artifactId>-->
-            <!--<scope>runtime</scope>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.4.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.theoryinpractise</groupId>
-            <artifactId>halbuilder-json</artifactId>
-            <version>4.0.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.theoryinpractise</groupId>-->
+            <!--<artifactId>halbuilder-json</artifactId>-->
+            <!--<version>4.0.2</version>-->
+        <!--</dependency>-->
 
 		
 		<dependency>
@@ -86,11 +70,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.glassfish.jersey.test-framework.providers</groupId>-->
-            <!--<artifactId>jersey-test-framework-provider-jetty</artifactId>-->
-            <!--<version>2.19</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.glassfish.jersey.test-framework.providers</groupId>
             <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
@@ -107,12 +86,6 @@
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>2.4.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.catch-exception</groupId>
-            <artifactId>catch-exception</artifactId>
-            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>
