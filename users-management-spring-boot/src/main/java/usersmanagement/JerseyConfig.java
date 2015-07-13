@@ -1,22 +1,21 @@
-package usersmanagement.config;
+package usersmanagement;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import usersmanagement.rest.v1.assembler.AddressAssembler;
 import usersmanagement.rest.v1.assembler.CreateUserAssembler;
 import usersmanagement.rest.v1.assembler.UserUpdateHelperAssembler;
 
-@Configuration
+@Component
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
-        String currPackage = this.getClass().getPackage().toString();
-        String restPackage = currPackage.substring(0, currPackage.lastIndexOf('.')) + ".rest";
-        packages(true, restPackage);
+        packages(true, this.getClass().getPackage().toString());
     }
 
+    // Bean configuration is required here to support JerseyTest
     @Bean
     public CreateUserAssembler createUserAssembler() {
         return new CreateUserAssembler(addressAssembler(), passwordEncoder());

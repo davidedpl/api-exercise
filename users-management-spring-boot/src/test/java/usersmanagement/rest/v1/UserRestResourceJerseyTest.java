@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.StringUtils;
-import usersmanagement.config.JerseyConfig;
+import usersmanagement.JerseyConfig;
 import usersmanagement.domain.Address;
 import usersmanagement.domain.AddressableUser;
 import usersmanagement.domain.User;
