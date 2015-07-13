@@ -41,7 +41,6 @@ public class UserRestResourceJerseyTest extends JerseyTest {
     private static final User NOT_ADDRESSABLE_FOUND_USER = UserTestData.adminUser();
     private static final String FOUND_USER_NAME = FOUND_USER.getUsername();
     private static final AddressableUser NOT_FOUND_USER = UserTestData.subscriberUser2();
-    private static final User NOT_ADDRESSABLE_NOT_FOUND_USER = UserTestData.adminUser2();
     private static final String NOT_FOUND_USER_NAME = NOT_FOUND_USER .getUsername();
     private static final UserType AUTHORIZED_USER_TYPE = UserType.SuperUser;
     private static final UserType NOT_AUTHORIZED_USER_TYPE = UserType.Subscriber;
@@ -264,9 +263,35 @@ public class UserRestResourceJerseyTest extends JerseyTest {
         assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
     }
 
+    // update
+    @Test
+    public void updateSuccessful() {
+        response = client.target(BASE_RESOURCE_PATH + "/" + FOUND_USER_NAME)
+                .request(MediaType.APPLICATION_JSON).accept(UserRestResource.HAL_JSON)
+                .header("type", AUTHORIZED_USER_TYPE.toString())
+                .put(Entity.json(getUpdateNode()));
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void updateNotFound() {
+        response = client.target(BASE_RESOURCE_PATH + "/" + NOT_FOUND_USER_NAME)
+                .request(MediaType.APPLICATION_JSON).accept(UserRestResource.HAL_JSON)
+                .header("type", AUTHORIZED_USER_TYPE.toString())
+                .put(Entity.json(getUpdateNode()));
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void updateNotAuthorized() {
+        response = client.target(BASE_RESOURCE_PATH + "/" + FOUND_USER_NAME)
+                .request(MediaType.APPLICATION_JSON).accept(UserRestResource.HAL_JSON)
+                .header("type", NOT_AUTHORIZED_USER_TYPE.toString())
+                .put(Entity.json(getUpdateNode()));
+        assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+    }
 
     // delete
-
     @Test
     public void deleteSuccessful() {
         response = client.target(BASE_RESOURCE_PATH + "/" + FOUND_USER_NAME)
@@ -341,6 +366,17 @@ public class UserRestResourceJerseyTest extends JerseyTest {
             assertEquals(expectedBillingAddress.getPostCode(), actualBillingAddress.get("postCode").asText());
         }
         assertEquals(expectedBillingAddress.getCountry(), actualBillingAddress.get("country").asText());
+    }
+
+    private ObjectNode getUpdateNode() {
+        ObjectNode updateNode = JsonNodeFactory.instance.objectNode();
+        updateNode.put("title", FOUND_USER.getTitle());
+        updateNode.put("firstName", FOUND_USER.getFirstName());
+        updateNode.put("lastName", FOUND_USER.getLastName());
+        updateNode.put("dateOfBirth", FOUND_USER.getDateOfBirth().toString());
+        updateNode.put("email", "invalid_email");
+        updateNode.put("password", FOUND_USER.getPassword());
+        return updateNode;
     }
 
 }
